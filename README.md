@@ -2,7 +2,8 @@
 
 This is a complete e-commerce project developed in ASP.NET. It is ready for anyone who wants to configure it and make it available in production, whatever the type of product to sell.
 
-I removed the web.config file as it contained a lot of user and password information, for those who want the configuration file and a brief presentation of what is needed to configure the project and start it, please send an email to saulodacruz1999@ hotmail.com, which I reply.
+I removed the web.config file as it contained a lot of user and password information, for those who want the configuration file and a brief presentation of what is needed to configure the project and start it, please send an email to saulodacruz1999@hotmail.com, which I reply.
+
 
 
 PORTUGUESE
