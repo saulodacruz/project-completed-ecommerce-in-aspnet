@@ -1,0 +1,117 @@
+﻿@model List<Models.Pedido>
+@{
+    ViewBag.Title = "Pedidos";
+}
+<style>
+    table th, table td {
+        text-align: center;
+        vertical-align: middle !important
+    }
+    .btn-default {
+        padding: 3px 28px;
+        margin: -3px;
+    }
+</style>
+<div class="row">
+    <h3>Pedidos</h3>
+</div>
+<br />
+<div class="row" style="display:flex">
+    <select class="form-control" onchange="if($(this).val() == '0') {window.location.href='/Pedido/Pedidos'} else{window.location.href='/Pedido/Pedidos?codStatusPedido='+$(this).val()}" id="selecStatus">
+        <option value="0">Todos</option>
+        @foreach (var item in ViewBag.StatusPedido)
+        {
+            <option value="@item.CodStatusPedido">@item.Nome</option>
+        }
+    </select>
+    <a class="btn btn-default" style="margin-left:15px;padding: 9px 28px;" href="/Pedido/Atualizar">Atualizar</a>
+</div>
+<br />
+<div class="row">
+    <table id="pedidos" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Pagamento</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Frete</th>
+                <th>Data</th>
+                <th>Cod</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var pagamento = item.Pagamentos.OrderBy(x => x.Data).LastOrDefault();
+                var status = @item.LogStatusPedido.OrderByDescending(x => x.Data).First().StatusPedido.Nome;
+                <tr>
+                    <td style="@switch(status)
+                    {
+                        case "Pagamento Cancelado":
+                        <text>color:red</text>
+                                break;
+                        case "Pedido Cancelado":
+                        <text>color:red</text>
+                                break;
+                        case "Pagamento Estornado":
+                        <text>color:red</text>
+                                break;
+                        case "Pagamento Reembolsado":
+                        <text>color:red</text>
+                            break;
+                        }">
+                    @status
+                    </td>
+                    <td>
+                        @if (pagamento != null)
+                        {
+                            if (pagamento.Boleto)
+                            {<text>Boleto</text>}
+                            else
+                            {<text>Crédito</text>}
+                        }
+                    </td>
+                    <td>@item.Usuario.Nome @item.Usuario.Sobrenome</td>
+                    <td>@item.ValorTotal</td>
+                    <td>
+                        @if (item.ValorFrete > 0)
+                        {<text>@item.ValorFrete</text> }
+                    else
+                    { <span style="color:green">GRÁTIS</span>}
+                    </td>
+                    <td>@item.Data.ToString("dd/MM/yyyy hh:mm")</td>
+                    <td>@item.CodPedido</td>
+                    <td>@if(status != "Aguardando Forma de Pagamento"){<a href="/Pedido/Pedido?codPedido=@item.CodPedido" class="btn btn-default">Ver</a>}</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        $('#pedidos').DataTable({
+            "order": [[6, "desc"]]
+        });
+        $(() => {
+            if (window.location.href.indexOf('codStatusPedido') > 0)
+                $('#selecStatus').val(getParam('codStatusPedido'))
+        })
+        function getParam(sParam) {
+            var sPageURL = window.location.search.substring(1),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                }
+            }
+        };
+    </script>
+}

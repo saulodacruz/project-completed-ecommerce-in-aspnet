@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title | AIO Pratas</title>
+    <link rel="icon" href="/Content/images/favicon.png" type="imagem/x-icon">
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span class="navbar-brand">AIO Pratas</span>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Produtos", "Produtos", "Produto")</li>
+                    <li>@Html.ActionLink("Categorias", "Categorias", "Categoria")</li>
+                    <li>@Html.ActionLink("Cupons", "Cupons", "Cupom")</li>
+                    <li>@Html.ActionLink("Pedidos", "Pedidos", "Pedido")</li>
+                    <li>@Html.ActionLink("Clientes", "Clientes", "Cliente")</li>
+                    <li id="menuSair">@Html.ActionLink("Sair", "Logout", "UsuarioAdmin")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <div class="container body-content">
+        <footer>
+            <hr />
+            <p>&copy; @Servicos.Util.DateTimeNowBR().Year</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/script")
+   
+    <script>
+        $(() => {
+            CarregarRegras();
+        });
+        $('.dataBr').mask("00/00/0000");
+        function getCookie(name) { var value = "; " + document.cookie; var parts = value.split("; " + name + "="); if (parts.length == 2) return parts.pop().split(";").shift(); }
+        function CarregarRegras() {
+            if (getCookie('aioSessionAdmin') == undefined) {
+                $('#menuSair').fadeOut(0);
+            }
+        }
+        var imgsErrors = false;
+        window.onload = function () {
+            if (imgsErrors)
+                window.location.reload();
+        };
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,30 @@
+﻿@model List<Models.Avaliacao>
+<tr>
+    <th style="width: 133px;">Nome</th>
+    <th>Comentário</th>
+    <th>Data</th>
+    <th style="width: 116px;"></th>
+    <th></th>
+</tr>
+@if (Model != null)
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Usuario.Nome</td>
+            <td>@item.Comentario</td>
+            <td>@item.Data.ToString("dd/MM/yyyy")</td>
+            <td>
+                @for (int i = 0; i < item.Estrelas; i++)
+                {
+                    <i class="fas fa-star"></i>
+                }
+                @for (int i = 0; i < (5 - item.Estrelas); i++)
+                {
+                    <i class="far fa-star"></i>
+                }
+            </td>
+            <td><button onclick="RemoverAvaliacao(@item.CodAvaliacao)" class="btn btn-danger">X</button></td>
+        </tr>
+    }
+}

@@ -1,0 +1,266 @@
+﻿@model List<Models.Produto>
+<style>
+    .filter-tope-group {
+        margin: 0;
+    }
+
+        .filter-tope-group button {
+            margin: 2px 0;
+        }
+
+    .itemSearch {
+        color: black;
+        padding: 0;
+    }
+
+        .itemSearch:hover {
+            background: #f2f2f2;
+        }
+
+        .itemSearch a {
+            cursor: pointer;
+            border: 1px solid #e6e6e6;
+            border-top: none;
+            padding: 10px 20px;
+            text-decoration: none !important;
+            color: black !important;
+            width: 100%
+        }
+    .valorAnt {
+        position: relative;
+        color: red;
+        text-decoration: line-through;
+        top: -4px;
+        left: 8px;
+    }
+</style>
+<div class="flex-w flex-sb-m p-b-52" style="margin: 0 23px -24px 23px;">
+    <div class="flex-w flex-l-m filter-tope-group m-tb-10"></div>
+    <div class="flex-w flex-c-m m-tb-10">
+        <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+            <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+            <i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+            Filtro
+        </div>
+        <div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+            <i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+            <i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+            Procurar
+        </div>
+    </div>
+    <!-- Search product -->
+    <div class="dis-none panel-search w-full p-t-10 p-b-15">
+        <div class="bor8 dis-flex p-l-15">
+            <div class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+                <i class="zmdi zmdi-search"></i>
+            </div>
+            <input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" id="searchProduct" placeholder="Procurar" onkeyup="BuscarProduto()">
+        </div>
+        <div id="resultadoPesquisa">
+        </div>
+    </div>
+    <!-- Filter -->
+    <div class="dis-none panel-filter w-full p-t-10" id="divFiltro">
+        <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+            <div class="filter-col2 p-r-15 p-b-27">
+                <div class="mtext-102 cl2 p-b-15">
+                    Tipos
+                </div>
+                <ul>
+                    <li class="p-b-6">
+                        <div class="flex-w flex-l-m filter-tope-group m-tb-10">
+                            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 flex-w flex-l-m filter-tope-group m-tb-10" data-filter="*">
+                                Todos
+                            </button>
+                        </div>
+                    </li>
+                    @foreach (var i in ViewBag.CategoriasMenuB)
+                    {
+                        <li class="p-b-6">
+                            <div class="flex-w flex-l-m filter-tope-group m-tb-10">
+                                <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 flex-w flex-l-m filter-tope-group m-tb-10" data-filter=".@i.Nome">
+                                    @i.Descricao
+                                </button>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="filter-col1 p-r-15 p-b-27">
+                <div class="mtext-102 cl2 p-b-15">
+                    Ordenar Por
+                </div>
+                <ul>
+                    <li class="p-b-6">
+                        <div class="flex-w flex-l-m m-tb-10" style="margin:0">
+                            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 flex-w flex-l-m m-tb-10" onclick="CarregarProdutosCategoria(false, true);" id="filtroMaisBarato" style="margin:2px 0">
+                                Mais Barato
+                            </button>
+                        </div>
+                    </li>
+                    <li class="p-b-6">
+                        <div class="flex-w flex-l-m m-tb-10" style="margin:0">
+                            <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 flex-w flex-l-m m-tb-10" onclick="CarregarProdutosCategoria(true, false);" id="filtroMaisCaro" style="margin:2px 0">
+                                Mais Caro
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row isotope-grid" style="margin: 0 6px;">
+    @foreach (var p in Model)
+    {
+        string url = $"/Produto/{p.Nome.Replace(" ", "-")}";
+        <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item @foreach (var cat  in p.Categorias.Where(x => x.CategoriaPrincipal == false)) { <text>@cat.Nome</text> } ">
+            <div class="block2">
+                <div class="block2-pic hov-img0">
+                    <a href="@url">
+                        <img src="@p.UrlImgASmall" alt="@p.Nome" title="@p.Nome" onerror="imgsErrors = true"/>
+                    </a>
+                </div>
+                <div class="block2-txt flex-w flex-t p-t-14">
+                    <div class="block2-txt-child1 flex-col-l">
+                        <a href="@url" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6 nomeProduto" title="@p.Nome">
+                            @p.Nome
+                        </a>
+                        <div style="display: flex;">
+                            <h4>R$ @p.Valor.ToString().Replace('.', ',')</h4>
+                            @if (p.ValorAnterior > 0)
+                            {
+                                <span class="valorAnt">R$ @p.ValorAnterior.ToString().Replace('.', ',')</span>
+                            }
+                        </div>
+                        <span class="stext-105">
+                            ou 6x de <span class="price">R$@(Math.Round(p.Valor / 6, 2).ToString().Replace('.', ','))</span> s/ juros.
+                        </span>
+                        @if (p.ProdutoEsgotado)
+                        {
+                            <div style="width: 115%;margin-top:10px">
+                                <small class="cl5 trans-03" style="border-radius: 5px; text-align: center; width: 100%;color:red">
+                                    ESGOTADO TEMPORARIAMENTE!
+                                </small>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="margin-top: 8px;width: 115%;">
+                                <a href="@url" class="flex-c-m stext-101 cl5 trans-03 btnComprar" style="padding: 8px 20px; border-radius: 5px; text-align: center; font-size: large; width: 136px;" title="Comprar">
+                                    Comprar
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    @if (!p.ProdutoEsgotado)
+                    {
+                        <div class="block2-txt-child2 flex-r p-t-3">
+                            <button class="dis-block pos-relative iconDes_@p.CodProduto">
+                                <img class="dis-block trans-04" src="/Content/Template/images/icons/icon-heart-01.png" alt="ICON">
+                                <img class="onIcon dis-block trans-04 ab-t-l" src="/Content/Template/images/icons/icon-heart-02.png" alt="ICON" onclick="AddDes(@p.CodProduto, '@p.Nome', '@p.Valor.ToString().Replace(".",",")', 1, '@p.UrlImgASmall', '/Produto/@p.Nome.Replace(" ", "-")')">
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    $(() => {
+        AlinharAltura();
+        if('@ViewBag.Description' != '')
+            $('meta[name="description"]').attr("content", "@ViewBag.Description")
+        if('@ViewBag.Keywords' != '')
+            $('meta[name="keywords"]').attr("content", "@ViewBag.Keywords")
+    });
+    $('.js-show-filter').on('click', function () {
+        $(this).toggleClass('show-filter');
+        $('.panel-filter').slideToggle(400);
+
+        if ($('.js-show-search').hasClass('show-search')) {
+            $('.js-show-search').removeClass('show-search');
+            $('.panel-search').slideUp(400);
+        }
+    });
+    $('.js-show-search').on('click', function () {
+        $(this).toggleClass('show-search');
+        $('.panel-search').slideToggle(400);
+
+        if ($('.js-show-filter').hasClass('show-filter')) {
+            $('.js-show-filter').removeClass('show-filter');
+            $('.panel-filter').slideUp(400);
+        }
+    });
+    var $topeContainer = $('.isotope-grid');
+    var $filter = $('.filter-tope-group');
+    $filter.each(function () {
+        $filter.on('click', 'button', function () {
+            var filterValue = $(this).attr('data-filter');
+            $topeContainer.isotope({ filter: filterValue });
+        });
+    });
+    $(window).on('load', function () {
+        var $grid = $topeContainer.each(function () {
+            $(this).isotope({
+                itemSelector: '.isotope-item',
+                layoutMode: 'fitRows',
+                percentPosition: true,
+                animationEngine: 'best-available',
+                masonry: {
+                    columnWidth: '.isotope-item'
+                }
+            });
+        });
+    });
+    var isotopeButton = $('.filter-tope-group button');
+    $(isotopeButton).each(function () {
+        $(this).on('click', function () {
+            for (var i = 0; i < isotopeButton.length; i++) {
+                $(isotopeButton[i]).removeClass('how-active1');
+            }
+
+            $(this).addClass('how-active1');
+        });
+    });
+    function BuscarProduto() {
+        var text = $('#searchProduct').val().trim();
+        if (text.length > 1) {
+            $.ajax({
+                type: 'GET',
+                url: `/Produtos/BuscarProduto/${text}`,
+                success: function (r) {
+                    if (r.sucesso) {
+                        $('#resultadoPesquisa').empty();
+                        if (r.obj.length > 0) {
+                            r.obj.forEach(function (item, i) {
+                                $('#resultadoPesquisa').append(`<div class="dis-flex p-l-15 itemSearch"><a href="/Produto/${item.Nome.replace(/ /g, '-')}" style="display: flex;"> <div style="margin: auto 0;"><img src="${item.UrlImgASmall}" style="width: 51px; margin-right: 16px;"></div><div style="margin:auto 0">${item.Nome}</div> </a></div>`);
+                            });
+                        }
+                        else {
+                            $('#resultadoPesquisa').empty();
+                            $('#resultadoPesquisa').append(`<div class="dis-flex p-l-15 itemSearch"><a style="cursor:auto">Nenhum resultado encontrado!</a></div>`);
+                        }
+                    }
+                    else {
+                        $('#resultadoPesquisa').empty();
+                        $('#resultadoPesquisa').append(`<div class="dis-flex p-l-15 itemSearch"><a style="cursor:auto">Nenhum resultado encontrado!</a></div>`);
+                    }
+                }
+            });
+        }
+        else {
+            $('#resultadoPesquisa').empty();
+            $('#resultadoPesquisa').append(`<div class="dis-flex p-l-15 itemSearch"><a style="cursor:auto">Nenhum resultado encontrado!</a></div>`);
+        }
+    }
+    function AlinharAltura() {
+        var maiorAltura = 0;
+        for (var i = 0; i < $('.nomeProduto').length; i++) {
+            if ($('.nomeProduto')[i].offsetHeight > maiorAltura)
+                maiorAltura = $('.nomeProduto')[i].offsetHeight;
+        }
+        $('.nomeProduto').css('height', maiorAltura + 'px');
+    }
+</script>

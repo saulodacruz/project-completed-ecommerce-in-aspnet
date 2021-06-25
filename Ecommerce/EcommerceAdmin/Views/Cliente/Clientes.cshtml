@@ -1,0 +1,60 @@
+﻿@model List<Models.Usuario>
+@{
+    ViewBag.Title = "Clientes";
+}
+<style>
+    table th, table td {
+        text-align: center;
+        vertical-align: middle !important
+    }
+
+    .btn-default {
+        padding: 3px 28px;
+        margin: -3px;
+    }
+</style>
+<div class="row">
+    <h3>Clientes</h3>
+</div>
+<br />
+<div class="row">
+    <table id="pedidos" class="table table-hover">
+        <thead>
+            <tr>
+                <th>E-mail</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Cadastro</th>
+                <th>Cod</th>
+                <th>IdWirecard</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+               <tr>
+                   <td>@item.Email</td>
+                   <td>@item.Nome @item.Sobrenome</td>
+                   <td>@item.CPF</td>
+                   <td>@item.Telefone</td>
+                   <td>@item.DataCadastro</td>
+                   <td>@item.CodUsuario</td>
+                   <td>@item.IdWirecard</td>
+                   <td><span style="color:red;cursor:pointer" onclick="if (confirm('Tem certeza que deseja remover?')) { window.location.href='/Cliente/Remover?codUsuario=@item.CodUsuario' }">X</span></td>
+                   <td><a href="/Cliente/Cliente?codUsuario=@item.CodUsuario" class="btn btn-default">Ver</a></td>
+               </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        $('#pedidos').DataTable({
+            "order": [[5, "desc"]]
+        });
+    </script>
+}

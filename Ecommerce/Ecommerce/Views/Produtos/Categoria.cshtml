@@ -1,0 +1,56 @@
+﻿@{ 
+    ViewBag.Title = ViewBag.Categoria.Replace("-", " ");
+    ViewBag.Description = ViewBag.Categoria + " em Prata";
+    ViewBag.Keywords = "AIO Pratas," + ViewBag.Categoria + ", Prata";
+}
+<style>
+    .block2 {
+        width: 100%;
+    }
+</style>
+<div class="bg0 m-t-23 p-b-140" style="padding-bottom: 38px;">
+    <div class="container">
+        <div id="produtos"> 
+            <div class="lds-ellipsis" id="loaderProdutos" style="width: 80px;height: 80px;position: relative;left: 50%;right: 50%;top: 45px;z-index: 100000000;transform: translate(-50%,-50%);"><div></div><div></div><div></div><div></div></div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        var categoria = '@ViewBag.Categoria';
+        $(() => {
+            CarregarProdutosCategoria();
+        });
+        function CarregarProdutosCategoria(maisCaros = false, maisBaratos = false)
+        {
+            var url;
+            if (maisCaros) 
+                url = `/Produtos/ObterProdutosPorCategoria/${categoria}/true/false`;
+            else if (maisBaratos) 
+                url = `/Produtos/ObterProdutosPorCategoria/${categoria}/false/true`;
+            else
+                url = `/Produtos/ObterProdutosPorCategoria/${categoria}/false/false`;
+            $.ajax({
+                type: 'GET',
+                url,
+                success: function (r) {
+                    $('#loaderProdutos').fadeOut(0);
+                    $('#produtos').html(r);
+                    LoadDes();
+                    if (maisCaros) {
+                        $('#filtroMaisCaro').addClass('how-active1');
+                        $('#divFiltro').fadeIn(0);
+                    }
+                    else if (maisBaratos) {
+                        $('#filtroMaisBarato').addClass('how-active1');
+                        $('#divFiltro').fadeIn(0);
+                    }
+                },
+                error: function () {
+                    swal('Atenção', 'Aconteceu um problema ao tentar carregar os produtos. Tente novamente.', 'error')
+                    $('#loaderProdutos').fadeOut(0);
+                }
+            });
+        }
+    </script>    
+}

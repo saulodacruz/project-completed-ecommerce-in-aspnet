@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if (string.IsNullOrWhiteSpace(ViewBag.Title))
+    {
+        <title>AIO Pratas</title>
+    }
+    else
+    {
+        <title>@ViewBag.Title | AIO Pratas</title>
+    }
+    <link rel="icon" href="/Content/images/favicon.png" type="imagem/x-icon">
+    <meta name="description" content="@ViewBag.Description">
+    <meta name="keywords" content="@ViewBag.Keywords">
+    @Styles.Render("/bundles/css")
+</head>
+<body class="animsition">
+    <div class="lds-ellipsis" style="display:none"><div></div><div></div><div></div><div></div></div>
+    <div id="dvBody">
+        <header class="header-v4">
+            <!-- Header desktop -->
+            <div class="container-menu-desktop">
+                <!-- Topbar -->
+                <div class="top-bar">
+                    <div class="content-topbar flex-sb-m h-full container" style="justify-content: flex-end !important;">
+                        <span class="flex-c-m trans-04 p-lr-25 spanNomeTop textTransformCapitalize" style="color: white"></span>
+                        <div class="right-top-bar flex-w h-full">
+                            <a href="/Pedidos" class="flex-c-m trans-04 p-lr-25" id="btnMeusPedidosD" style="font-size: 13px;" title="Meus Pedidos">MEUS PEDIDOS</a>
+                            <a href="/Usuario/Conta" class="flex-c-m trans-04 p-lr-25" style="border-left: 1px solid rgba(255,255,255,0.3);border-right: 1px solid rgba(255,255,255,0.3);font-size: 13px;" title="Minha Conta">MINHA CONTA</a>
+                            <a href="/Usuario/Sair" class="flex-c-m trans-04 p-lr-25" id="btnSairD" style="display:none;border-right: 1px solid rgba(255,255,255,0.3) !important;font-size: 13px;" title="Sair">SAIR</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="wrap-menu-desktop how-shadow1">
+                    <nav class="limiter-menu-desktop container">
+                        <!-- Logo desktop -->
+                        <a href="/" class="logo" style="width: 172px;">
+                            <img src="/Content/images/logo-min320x92.jpg" alt="Logo AIO Pratas" title="AIO Pratas">
+                        </a>
+                        <!-- Menu desktop -->
+                        <div class="menu-desktop">
+                            <ul class="main-menu">
+                                @*<li class="active-menu">
+                                        <a href="/" title="Alianças">ALIANÇAS</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="index.html" title="Homepage 1">Homepage 1</a></li>
+                                        </ul>
+                                    </li>*@
+                                <li>
+                                    <a href="/Produtos/Aneis" title="Anéis">ANÉIS</a>
+                                </li>
+                                <li>
+                                    <a href="/Produtos/Brincos" title="Brincos">BRINCOS</a>
+                                </li>
+                                <li>
+                                    <a href="/Produtos/Berloques" title="Berloques">BERLOQUES</a>
+                                </li>
+                                <li>
+                                    <a href="/Produtos/Colares" title="Colares">COLARES</a>
+                                </li>
+                                <li>
+                                    <a href="/Produtos/Correntes" title="Correntes">CORRENTES</a>
+                                </li>
+                                <li>
+                                    <a href="/Produtos/Pulseiras" title="Pulseiras">PULSEIRAS</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Icon header -->
+                        <div class="wrap-icon-header flex-w flex-r-m">
+                            <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search" title="Pesquisar Categoria">
+                                <i class="zmdi zmdi-search"></i>
+                            </div>
+                            <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart btnCarrinho" data-notify="0" onclick="OpenCar()" title="Carrinho">
+                                <i class="zmdi zmdi-shopping-cart"></i>
+                            </div>
+                            <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart btnDesejo" data-notify="0" onclick="OpenDes();" title="Lista de Desejos">
+                                <i class="zmdi zmdi-favorite-outline"></i>
+                            </div>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <!-- Header Mobile -->
+            <div class="wrap-header-mobile">
+                <!-- Logo moblie -->
+                <div class="logo-mobile">
+                    <a href="/"><img src="/Content/images/logo-min320x92.jpg" alt="Logo AIO Pratas" title="AIO Pratas" style="max-width: calc(118% - 29px);max-height: 121%;"></a>
+                </div>
+                <!-- Icon header -->
+                <div class="wrap-icon-header flex-w flex-r-m m-r-15">
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search" title="Pesquisar Categoria">
+                        <i class="zmdi zmdi-search"></i>
+                    </div>
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart btnCarrinho" data-notify="0" onclick="OpenCar()" title="Carrinho">
+                        <i class="zmdi zmdi-shopping-cart"></i>
+                    </div>
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart btnDesejo" data-notify="0" onclick="OpenDes()" title="Lista de Desejos">
+                        <i class="zmdi zmdi-favorite-outline"></i>
+                    </div>
+                </div>
+                <!-- Button show menu -->
+                <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </div>
+            </div>
+            <!-- Menu Mobile -->
+            <div class="menu-mobile">
+                <ul class="topbar-mobile">
+                    <li>
+                        <div class="right-top-bar flex-w h-full" style="justify-content: flex-end;">
+                            <a class="flex-c-m p-lr-10 trans-04 spanNomeTop textTransformCapitalize" style="text-align: left;color: white;border-left: none"></a>
+                            <a href="/Pedidos" class="flex-c-m p-lr-10 trans-04" id="btnMeusPedidosM" style="border-left: 1px solid rgba(255,255,255,.3);" title="Meus Pedidos">MEUS PEDIDOS</a>
+                            <a href="/Usuario/Conta" class="flex-c-m p-lr-10 trans-04" style="border-left: 1px solid rgba(255,255,255,0.3);border-right: 1px solid rgba(255,255,255,0.3);" title="Minha Conta">MINHA CONTA</a>
+                            <a href="/Usuario/Sair" class="flex-c-m p-lr-10 trans-04" id="btnSairM" style="display:none;border-right: 1px solid rgba(255,255,255,0.3) !important;" title="Sair">SAIR</a>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="main-menu-m">
+                    @*<li>
+                            <a href="/" title="Alianças">ALIANÇAS</a>
+                            <ul class="sub-menu-m">
+                                <li><a href="index.html" title="Homepage 1">Homepage 1</a></li>
+                            </ul>
+                            <span class="arrow-main-menu-m">
+                                <i class="fa fa-angle-right" aria-hidden="true"></i>
+                            </span>
+                        </li>*@
+                    <li>
+                        <a href="/Produtos/Aneis" title="Anéis">ANÉIS</a>
+                    </li>
+                    <li>
+                        <a href="/Produtos/Brincos" title="Brincos">BRINCOS</a>
+                    </li>
+                    <li>
+                        <a href="/Produtos/Berloques" title="Berloques">BERLOQUES</a>
+                    </li>
+                    <li>
+                        <a href="/Produtos/Colares" title="Colares">COLARES</a>
+                    </li>
+                    <li>
+                        <a href="/Produtos/Correntes" title="Correntes">CORRENTES</a>
+                    </li>
+                    <li>
+                        <a href="/Produtos/Pulseiras" title="Pulseiras">PULSEIRAS</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- Modal Search -->
+            <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+                <div class="container-search-header" style="top: -97px;">
+                    <div class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
+                        <img src="/Content/Template/images/icons/icon-close2.png" alt="CLOSE">
+                    </div>
+                    <div class="wrap-search-header flex-w p-l-15" style="padding-left:0">
+                        <button class="flex-c-m trans-04" style="padding-left: 19px;">
+                            <i class="zmdi zmdi-search"></i>
+                        </button>
+                        <input class="plh3" type="text" id="buscarCategoria" placeholder="Pesquisar..." onkeyup="BuscarCategoria()" style="padding-left: 15px;">
+                        <div style="width: 101%;margin-top: 1px;" id="divPesquisaCats">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Cart -->
+        <div class="wrap-header-cart js-panel-cart" id="cartAio" onclick="$(document).trigger('cartAio');">
+            <div class="s-full js-hide-cart"></div>
+            <div class="header-cart flex-col-l p-l-65 p-r-25" style="padding: 4px 11px 0 18px">
+                <div class="header-cart-title flex-w flex-sb-m p-b-8" style="width: 100%;">
+                    <span class="mtext-103 cl2" id="titleCart"></span>
+                    <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart" style="margin-right: 10px;">
+                        <i class="zmdi zmdi-close"></i>
+                    </div>
+                </div>
+                <div class="header-cart-content flex-w containerScroll">
+                    <div class="w-full">
+                        <ul class="header-cart-wrapitem w-full" id="aioCar"></ul>
+                        <div class="header-cart-total w-full p-tb-40 comItem" style="padding: 5px 0px 21px 0;">
+                            Total: R$ <span id="txtCartTotal"></span>
+                        </div>
+                        <div class="header-cart-buttons flex-w w-full comItem" style="justify-content: center;">
+                            <button onclick="FinalizarCompraOfCarrinho()" class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10" style="width: 100%;" title="Finalizar Compra">Finalizar Compra</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @RenderBody()
+        <footer class="bg3 p-t-75 p-b-32">
+            <div class="container">
+                <div class="row" style="margin-bottom: -34px;">
+                    <div class="col-sm-6 col-lg-3 p-b-50">
+                        <h4 class="stext-301 cl0 p-b-30">
+                            INFORMAÇÕES
+                        </h4>
+                        <p class="stext-107 cl7 size-201" title="Contato">
+                            <b>Atendimento por E-mail: </b><br />aiopratas@gmail.com<br />
+                            <b>Atendimento por WhatsApp: </b><br /><a href="https://wa.me/5511963220095" class="float" target="_blank">+55 (11) 96322-0095</a>
+                        </p>
+                        <div class="p-t-27">
+                            <a href="https://www.facebook.com/aiopratas/" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="_blank" title="Facebook">
+                                <i class="fa fa-facebook" style="font-size:30px"></i>
+                            </a>
+                            <a href="https://www.instagram.com/aiopratas/" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="_blank" title="Instagram">
+                                <i class="fa fa-instagram" style="font-size:30px"></i>
+                            </a>
+                            <a href="https://wa.me/5511963220095" class="fs-18 cl7 hov-cl1 trans-04 m-r-16" target="_blank" title="WhatsApp">
+                                <i class="fa fa-whatsapp" style="font-size:30px"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-3 p-b-50" title="Receber novidades">
+                        <h4 class="stext-301 cl0 p-b-30">
+                            Receber novidades
+                        </h4>
+                        <div class="wrap-input1 w-full p-b-4" id="inputEmailAssinatura">
+                            <input class="input1 bg-none plh1 stext-107 cl7" type="text" placeholder="Digite o seu e-mail" id="txtEmailAssinatura" title="Digite o seu e-mail">
+                            <div class="focus-input1 trans-04"></div>
+                        </div>
+                        <div class="p-t-18">
+                            <button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04" onclick="CadEmail()" title="Assinar">
+                                Assinar
+                                <i class="fa fa-spinner fa-spin" style="margin-left: 5px;display:none;" id="btnEmailAssinatura"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-6 p-b-50" style="text-align:center">
+                        <h4 class="stext-301 cl0 p-b-30">
+                            Certificados e Formas de Pagamento
+                        </h4>
+                        <img src="~/Content/images/bandeiras-pagamento.png" style="border-radius: 7px;width:100%;max-width:360px" />
+                    </div>
+                </div>
+                <div class="p-t-40">
+                    <p class="stext-107 cl6 txt-center">
+                        Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script>
+                        | Desenvolvido por <a href="https://www.linkedin.com/in/saulo-da-cruz-1418a011b/" target="_blank">Saulo Cruz</a>
+                    </p>
+                </div>
+            </div>
+        </footer>
+        <!-- Back to top -->
+        <div class="btn-back-to-top" id="myBtn">
+            <span class="symbol-btn-back-to-top">
+                <i class="zmdi zmdi-chevron-up"></i>
+            </span>
+        </div>
+    </div>
+    <script>
+        var imgsErrors = false;
+    </script>
+    @Scripts.Render("/bundles/script")
+    @RenderSection("scripts", required: false)
+    <script type='text/javascript'>
+        window.smartlook || (function (d) {
+            var o = smartlook = function () { o.api.push(arguments) }, h = d.getElementsByTagName('head')[0];
+            var c = d.createElement('script'); o.api = new Array(); c.async = true; c.type = 'text/javascript';
+            c.charset = 'utf-8'; c.src = 'https://rec.smartlook.com/recorder.js'; h.appendChild(c);
+        })(document);
+        smartlook('init', '774678713faa07e4ab8aa4575fb6f78679307037');
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-161970692-1"></script>
+    <script>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', 'UA-161970692-1');</script>
+</body>
+</html>

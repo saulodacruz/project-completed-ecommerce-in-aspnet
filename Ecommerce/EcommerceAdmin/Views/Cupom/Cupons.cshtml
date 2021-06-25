@@ -1,0 +1,59 @@
+﻿@model List<Models.Cupom>
+@{
+    ViewBag.Title = "Cupons";
+}
+<style>
+    table th, table td {
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <h3>Cupons</h3>
+</div>
+<br />
+<div class="row">
+    <a href="../Cupom/Cupom/" class="btn btn-default">Cadastrar</a>
+</div>
+<br />
+<div class="row">
+    <table id="cupons" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Valor</th>
+                <th>Data</th>
+                <th>Cod</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr style="cursor:pointer">
+                <td onclick="Ver(@item.CodCupom)">@item.Codigo</td>
+                <td onclick="Ver(@item.CodCupom)">@item.Valor</td>
+                <td onclick="Ver(@item.CodCupom)">@item.Data.ToString("dd/MM/yyyy")</td>
+                <td onclick="Ver(@item.CodCupom)">@item.CodCupom</td>
+                <td style="color:red; text-align:center" onclick="Remover(@item.CodCupom)">X</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section scripts{
+    <script>
+        $('#cupons').DataTable({
+            "order": [[2, "desc"]]
+        });
+        function Ver(cod) {
+            window.location.href = '../Cupom/Cupom?codCupom=' + cod;
+        }
+        function Remover(cod) {
+            if (confirm('Tem certeza que deseja remover?'))
+                window.location.href = '../Cupom/Remover?codCupom=' + cod;
+        }
+    </script>
+}

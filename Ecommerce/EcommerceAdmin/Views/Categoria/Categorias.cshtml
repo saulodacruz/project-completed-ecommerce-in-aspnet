@@ -1,0 +1,56 @@
+﻿@model List<Models.Categoria>
+@{
+    ViewBag.Title = "Categorias";
+}
+<style>
+    table th, table td {
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <h3>Categorias</h3>
+</div>
+<br />
+<div class="row">
+    <a href="../Categoria/Categoria/" class="btn btn-default">Cadastrar</a>
+</div>
+<br />
+<div class="row">
+    <table id="categorias" class="table table-hover">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Código</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr style="cursor:pointer">
+                <td onclick="Ver(@item.CodCategoria)">@item.Nome</td>
+                <td onclick="Ver(@item.CodCategoria)">@item.Descricao</td>
+                <td onclick="Ver(@item.CodCategoria)">@item.CodCategoria</td>
+                <td style="color:red; text-align:center" onclick="Remover(@item.CodCategoria)">X</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@section scripts{
+    <script>
+        $('#categorias').DataTable({
+            "order": [[2, "desc"]]
+        });
+        function Ver(cod) {
+            window.location.href = '../Categoria/Categoria?codCategoria=' + cod;
+        }
+        function Remover(cod){
+            if (confirm('Tem certeza que deseja remover?'))
+                window.location.href='../Categoria/Remover?codCategoria='+cod;
+        }
+    </script>
+}

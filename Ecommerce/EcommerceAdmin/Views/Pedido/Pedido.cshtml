@@ -1,0 +1,362 @@
+﻿@model Ecommerce.Models.ViewModelPedido
+@{
+    ViewBag.Title = "Pedido";
+    var pagamento = Model.Pedido.Pagamentos.OrderBy(x => x.Data).Last();
+    var pagamentoWirecard = ((List<Wirecard.Models.Payment>)((dynamic)Model.PedidoWirecard).Payments)
+                             .Where(x => x.Id == pagamento.IdWirecardPagamento).Last();
+    var ambiente = System.Configuration.ConfigurationManager.AppSettings["AmbienteSiteCliente"].ToString();
+}
+<style>
+    ul.timeline {
+        list-style-type: none;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+
+        ul.timeline:before {
+            content: ' ';
+            background: black;
+            display: inline-block;
+            position: absolute;
+            left: 16px;
+            width: 4px;
+            height: 100%;
+            z-index: 400;
+            border-radius: 1rem;
+        }
+
+    li.timeline-item {
+        margin: 20px 0px 20px 1px;
+    }
+
+    .timeline-arrow {
+        border-top: 0.5rem solid transparent;
+        border-right: 0.5rem solid #fff;
+        border-bottom: 0.5rem solid transparent;
+        display: block;
+        position: absolute;
+        left: 2rem;
+    }
+
+    li.timeline-item::before {
+        content: ' ';
+        background: rgb(113, 127, 224);
+        display: inline-block;
+        position: absolute;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        left: 11px;
+        width: 14px;
+        height: 14px;
+        z-index: 400;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .text-gray {
+        color: #999;
+    }
+
+    h4 {
+        font-weight: 600
+    }
+</style>
+<br />
+<table style="width: 100%;">
+    <tr>
+        <td><h3 style="font-weight:700">Pedido em @Model.Pedido.Data.ToString("dd MMM, yyyy")</h3></td>
+        <td>
+            <div class="row">
+                <a href="/Pedido/Pedidos" class="btn btn-default">Retornar</a>
+            </div>
+        </td>
+    </tr>
+</table>
+<br />
+<div class="container" style="margin-left: 0;">
+    <div class="row">
+        <div class="col-sm">
+            <h4>Informações</h4>
+            <b>Nº Pedido: </b><span>@Model.Pedido.CodPedido</span><br />
+            @if (!string.IsNullOrWhiteSpace(Model.Pedido.CodigoRastreio))
+            {<b>Código de Rastreio: </b><span>@Model.Pedido.CodigoRastreio</span><br />}
+            @if (Model.Pedido.DataPrevista != null)
+            {<b>Previsão de Entrega: </b><span>@Convert.ToDateTime(Model.Pedido.DataPrevista).ToString("dd/MM/yyyy")</span><br />}
+            <b>Status: </b><span>@Model.Pedido.LogStatusPedido.OrderByDescending(x => x.Data).First().StatusPedido.Nome</span><br />
+            <b>Forma de Pagamento: </b>@if (pagamento.Boleto){<span>Boleto</span> }else{<span>Cartão de Crédito</span>}
+            <br />
+            <br />
+        </div>
+        <div class="col-sm">
+            <h4>Endereço de Entrega</h4>
+            <span>
+                @Model.Pedido.Usuario.Nome @Model.Pedido.Usuario.Sobrenome <br />
+                <b>Logradouro: </b>@Model.Pedido.Usuario.Logradouro <br />
+                <b>Número: </b>@Model.Pedido.Usuario.Numero <br />
+                @if (!string.IsNullOrWhiteSpace(Model.Pedido.Usuario.Complemento))
+                {<b>Complemento: </b>@Model.Pedido.Usuario.Complemento<br />}
+                <b>Cidade: </b>@Model.Pedido.Usuario.Cidade<br />
+                <b>Estado: </b>@Model.Pedido.Usuario.UF <br />
+                <b>CEP: </b>@Model.Pedido.Usuario.CEP
+            </span>
+            <br />
+            <br />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <h4>Resumo do Pedido</h4>
+            <b>Parcelas: </b><span>@pagamento.Parcelas</span><br />
+            @if (Model.Pedido.Cupom != null)
+            {<b>Desconto: </b><span>R$ @Model.Pedido.Cupom.Valor.ToString().Replace(".", ",")</span> <br />}
+            <b>Tipo do Frete: </b><span>@Model.Pedido.TipoFrete</span><br />
+            <b>Frete: </b><span>
+                @if (Model.Pedido.ValorFrete > 0)
+                {<text>R$ @Model.Pedido.ValorFrete.ToString().Replace('.', ',')</text> }
+            else
+            { <span style="color:green">GRÁTIS</span>}
+            </span><br />
+            <b>Total: </b><span>R$ @Model.Pedido.ValorTotal.ToString().Replace(".", ",")</span>
+            <br />
+            <br />
+        </div>
+        <div class="col-sm">
+            @if (ViewBag.Estorno == null)
+            {
+                if (pagamento.Boleto)
+                {
+                    if (Convert.ToDateTime(pagamentoWirecard.FundingInstrument.Boleto.ExpirationDate).Date >= Servicos.Util.DateTimeNowBR().Date)
+                    {
+                        if(pagamentoWirecard._Links.Payboleto != null)
+                        {
+                            <h4>Seu Boleto</h4>
+                            <div style="padding-bottom: 5px;">
+                                <a href="@pagamentoWirecard._Links.Payboleto.PrintHref" target="_blank">
+                                    <img src="data:image/png;base64,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" style="width: 80px;">
+                                </a><br />
+                            </div>
+                            <span type="text" id="codBarras" style="width: 100%;">@pagamentoWirecard.FundingInstrument.Boleto.LineCode</span>
+                        }
+                    }
+                    else
+                    {
+                        if (pagamentoWirecard._Links.Payboleto != null)
+                        {
+                            <h5>Boleto Vencido</h5>
+                            <span>Para realizar a compra, faça um novo pedido.</span>
+                        }
+                    }
+                }
+                else
+                {
+                    <h5>Pagamento</h5>
+                    <span>Cartão de Crédito</span><br />
+                    <span>@pagamentoWirecard.FundingInstrument.CreditCard.Holder.FullName</span><br />
+                    <span>XXXX XXXX XXXX @pagamentoWirecard.FundingInstrument.CreditCard.Last4</span><br />
+                    <span>@pagamentoWirecard.FundingInstrument.CreditCard.Brand</span>
+                }
+                }
+                else
+                {
+                    if (pagamento.Boleto)
+                    {
+                        if (ViewBag.Estorno.Data == null)
+                        {
+                        <h4>Solicitação de Estorno</h4>
+                    }
+                    else
+                    {
+                        <h5>Estornado Para</h5>
+                    }
+                    <span><b>Código do Banco: </b>@ViewBag.Estorno.NumeroBanco</span><br />
+                    <span><b>Agência: </b>@ViewBag.Estorno.Agencia</span><br />
+                    <span><b>Conta: </b>@ViewBag.Estorno.Conta</span><br />
+                    <span><b>Nome do Titular: </b>@ViewBag.Estorno.NomeDeposito</span><br />
+                    <span><b>CPF do Titular: </b>@ViewBag.Estorno.CPF</span><br />
+                    if (!string.IsNullOrWhiteSpace(ViewBag.Estorno.Observacao))
+                    {<span><b>Obs: </b>@ViewBag.Estorno.Observacao</span><br />}
+                    if (ViewBag.Estorno.Data == null)
+                    {
+                        <span><b>Será realizado até: </b>@Model.Pedido.Data.AddDays(45).ToString("dd/MM/yyyy")</span><br />
+                    }
+                }
+                else
+                {
+                    <h4>Estornado Para</h4>
+                    <span>Cartão de Crédito</span><br />
+                    <span>@pagamentoWirecard.FundingInstrument.CreditCard.Holder.FullName</span><br />
+                    <span>XXXX XXXX XXXX @pagamentoWirecard.FundingInstrument.CreditCard.Last4</span><br />
+                    <span>@pagamentoWirecard.FundingInstrument.CreditCard.Brand</span>
+                }
+            }
+        </div>
+    </div>
+</div>
+<hr />
+<h4>@Model.Pedido.LogStatusPedido.OrderByDescending(x => x.Data).First().StatusPedido.Nome</h4>
+<div class="container py-5" style="padding: 0 0 17px 0 !important;margin-left: 0;">
+    <div class="row">
+        <div class="col-lg-7">
+            <ul class="timeline">
+                @foreach (var item in Model.Pedido.LogStatusPedido.OrderByDescending(x => x.Data))
+                {
+                    <li class="timeline-item bg-white rounded ml-3 p-4 shadow" style="border-bottom: 1px solid #c7c7c7;">
+                        <div class="timeline-arrow"></div>
+                        @if (item.StatusPedido.Nome != "Aguardando Forma de Pagamento" &&
+                            item.StatusPedido.Nome != "Aguardando Pagamento" &&
+                            item.StatusPedido.Nome != "Pagamento em Análise" &&
+                            item.StatusPedido.Nome != "Pagamento Pre-autorizado" &&
+                            item.StatusPedido.Nome != "Pagamento Criado")
+                        {
+                            <span style="color:red;float:right;cursor:pointer" onclick="RemoverStatus(@item.CodLogStatusPedido)">X</span>
+                        }
+                        <h2 class="h5 mb-0" style="margin-left: 21px;">@item.StatusPedido.Nome</h2>
+                        <span class="small text-gray" style="margin-left: 21px;">@item.Data.ToString("dd MMM, yyyy HH:mm")</span>
+                        <p style="margin-left: 21px;font-size: small;color: crimson;">@item.Observacao</p>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+<h4>Itens do seu Pedido</h4>
+<table style="width: 100%;background-color: white;" class="table table-bordered card-header">
+    @foreach (var item in Model.Pedido.ItensPedido)
+    {
+        <tr>
+            <td>
+                <table style="width:100%">
+                    <tr>
+                        <td rowspan="2" style="vertical-align: middle; text-align: left;border:none;width: 100px;min-width: 100px;">
+                            <a href="@ambiente/Produto/@item.Produto.Nome.Replace(' ', '-')"><img src="@item.Produto.UrlImgA" width="100" height="100" alt="@item.Produto.Nome" /></a>
+                        </td>
+                        <td style="border:none; padding-left: 12px;">
+                            <a href="@ambiente/Produto/@item.Produto.Nome.Replace(' ', '-')"><span class="txtValues">@item.Produto.Nome</span></a><br />
+                            <small>Quantidade: <span class="txtValues">@item.Quantidade<span>x</span></span></small><br />
+                            <span class="txtValues">R$ @item.Produto.Valor.ToString().Replace(".", ",")</span><br />
+                            @if (!string.IsNullOrWhiteSpace(item.Observacao))
+                            {
+                                <small>Observações: <span class="txtValues">@item.Observacao</span></small>
+                            }
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    }
+</table>
+<hr />
+<div class="form-group">
+    <label for="selecStatus">Status</label>
+    <select id="selecStatus" class="form-control">
+        <option value="0">Selecione..</option>
+        @foreach (var item in ViewBag.Status)
+        {
+            <option value="@item.CodStatusPedido">@item.CodStatusPedido - @item.Nome</option>
+        }
+    </select>
+</div>
+<div class="form-group">
+    <textarea class="form-control" placeholder="Observação" id="obsStatus" maxlength="1000"></textarea>
+</div>
+<div class="form-group">
+    <label for="previsaoEntrega">Data de Entrega Prevista</label><span>  (Hoje + Dias do Frete) = @Servicos.Util.DateTimeNowBR().AddDays(Model.Pedido.DiasFrete).ToString("dd/MM/yyyy")</span>
+    <input class="form-control" id="dataPrevista" value="@if (Model.Pedido.DataPrevista != null) {<text>@Model.Pedido.DataPrevista.Value.ToString("dd/MM/yyyy")</text> }" />
+</div>
+<div class="form-group">
+    <label for="previsaoEntrega">Código de Rastreio</label> 
+    <input class="form-control" id="codigoRastreio" value="@Model.Pedido.CodigoRastreio" />
+</div>
+<button class="btn btn-default" onclick="Salvar()">Salvar</button>&nbsp;
+@if (Model.Pedido.LogStatusPedido.OrderBy(x => x.Data).Last().CodStatusPedido == (int)Servicos.Util.StatusPedido.EncaminhadoParaPostagem)
+{
+    if (Model.Pedido.EmailEnviado)
+    {
+        <button class="btn btn-default" disabled>E-mail Enviado :)</button>
+    }
+    else
+    {
+        <button class="btn btn-default" onclick="EnviarEmail()">Enviar e-mail</button>
+    }
+}
+else if (Model.Pedido.EmailEnviado)
+{
+    <button class="btn btn-default" disabled>E-mail Enviado :)</button>
+}
+@section scripts{
+    <script>
+        $(() => {
+            var bancosJson = [{ value: "001", name: "Banco do Brasil" }, { value: "003", name: "Banco da Amazônia" }, { value: "004", name: "Banco do Nordeste" }, { value: "021", name: "Banestes" }, { value: "025", name: "Banco Alfa" }, { value: "027", name: "Besc" }, { value: "029", name: "Banerj" }, { value: "031", name: "Banco Beg" }, { value: "033", name: "Banco Santander Banespa" }, { value: "036", name: "Banco Bem" }, { value: "037", name: "Banpará" }, { value: "038", name: "Banestado" }, { value: "039", name: "BEP" }, { value: "040", name: "Banco Cargill" }, { value: "041", name: "Banrisul" }, { value: "044", name: "BVA" }, { value: "045", name: "Banco Opportunity" }, { value: "047", name: "Banese" }, { value: "062", name: "Hipercard" }, { value: "063", name: "Ibibank" }, { value: "065", name: "Lemon Bank" }, { value: "066", name: "Banco Morgan Stanley Dean Witter" }, { value: "069", name: "BPN Brasil" }, { value: "070", name: "Banco de Brasília – BRB" }, { value: "072", name: "Banco Rural" }, { value: "073", name: "Banco Popular" }, { value: "074", name: "Banco J. Safra" }, { value: "075", name: "Banco CR2" }, { value: "076", name: "Banco KDB" }, { value: "077", name: "Banco Inter" }, { value: "096", name: "Banco BMF" }, { value: "104", name: "Caixa Econômica Federal" }, { value: "107", name: "Banco BBM" }, { value: "116", name: "Banco Único" }, { value: "151", name: "Nossa Caixa" }, { value: "175", name: "Banco Finasa" }, { value: "184", name: "Banco Itaú BBA" }, { value: "204", name: "American Express Bank" }, { value: "208", name: "Banco Pactual" }, { value: "212", name: "Banco Matone" }, { value: "213", name: "Banco Arbi" }, { value: "214", name: "Banco Dibens" }, { value: "217", name: "Banco Joh Deere" }, { value: "218", name: "Banco Bonsucesso" }, { value: "222", name: "Banco Calyon Brasil" }, { value: "224", name: "Banco Fibra" }, { value: "225", name: "Banco Brascan" }, { value: "229", name: "Banco Cruzeiro" }, { value: "230", name: "Unicard" }, { value: "233", name: "Banco GE Capital" }, { value: "237", name: "Bradesco" }, { value: "237", name: "Next" }, { value: "241", name: "Banco Clássico" }, { value: "243", name: "Banco Stock Máxima" }, { value: "246", name: "Banco ABC Brasil" }, { value: "248", name: "Banco Boavista Interatlântico" }, { value: "249", name: "Investcred Unibanco" }, { value: "250", name: "Banco Schahin" }, { value: "252", name: "Fininvest" }, { value: "254", name: "Paraná Banco" }, { value: "263", name: "Banco Cacique" }, { value: "260", name: "Nubank" }, { value: "265", name: "Banco Fator" }, { value: "266", name: "Banco Cédula" }, { value: "300", name: "Banco de la Nación Argentina" }, { value: "318", name: "Banco BMG" }, { value: "320", name: "Banco Industrial e Comercial" }, { value: "356", name: "ABN Amro Real" }, { value: "341", name: "Itau" }, { value: "347", name: "Sudameris" }, { value: "351", name: "Banco Santander" }, { value: "353", name: "Banco Santander Brasil" }, { value: "366", name: "Banco Societe Generale Brasil" }, { value: "370", name: "Banco WestLB" }, { value: "376", name: "JP Morgan" }, { value: "389", name: "Banco Mercantil do Brasil" }, { value: "394", name: "Banco Mercantil de Crédito" }, { value: "399", name: "HSBC" }, { value: "409", name: "Unibanco" }, { value: "412", name: "Banco Capital" }, { value: "422", name: "Banco Safra" }, { value: "453", name: "Banco Rural" }, { value: "456", name: "Banco Tokyo Mitsubishi UFJ" }, { value: "464", name: "Banco Sumitomo Mitsui Brasileiro" }, { value: "477", name: "Citibank" }, { value: "479", name: "Itaubank (antigo Bank Boston)" }, { value: "487", name: "Deutsche Bank" }, { value: "488", name: "Banco Morgan Guaranty" }, { value: "492", name: "Banco NMB Postbank" }, { value: "494", name: "Banco la República Oriental del Uruguay" }, { value: "495", name: "Banco La Provincia de Buenos Aires" }, { value: "505", name: "Banco Credit Suisse" }, { value: "600", name: "Banco Luso Brasileiro" }, { value: "604", name: "Banco Industrial" }, { value: "610", name: "Banco VR" }, { value: "611", name: "Banco Paulista" }, { value: "612", name: "Banco Guanabara" }, { value: "613", name: "Banco Pecunia" }, { value: "623", name: "Banco Panamericano" }, { value: "626", name: "Banco Ficsa" }, { value: "630", name: "Banco Intercap" }, { value: "633", name: "Banco Rendimento" }, { value: "634", name: "Banco Triângulo" }, { value: "637", name: "Banco Sofisa" }, { value: "638", name: "Banco Prosper" }, { value: "643", name: "Banco Pine" }, { value: "652", name: "Itaú Holding Financeira" }, { value: "653", name: "Banco Indusval" }, { value: "654", name: "Banco A.J. Renner" }, { value: "655", name: "Banco Votorantim" }, { value: "707", name: "Banco Daycoval" }, { value: "719", name: "Banif" }, { value: "721", name: "Banco Credibel" }, { value: "734", name: "Banco Gerdau" }, { value: "735", name: "Banco Neon" }, { value: "738", name: "Banco Morada" }, { value: "739", name: "Banco Galvão de Negócios" }, { value: "740", name: "Banco Barclays" }, { value: "741", name: "BRP" }, { value: "743", name: "Banco Semear" }, { value: "745", name: "Banco Citibank" }, { value: "746", name: "Banco Modal" }, { value: "747", name: "Banco Rabobank International" }, { value: "748", name: "Banco Cooperativo Sicredi" }, { value: "749", name: "Banco Simples" }, { value: "751", name: "Dresdner Bank" }, { value: "752", name: "BNP Paribas" }, { value: "753", name: "Banco Comercial Uruguai" }, { value: "755", name: "Banco Merrill Lynch" }, { value: "756", name: "Banco Cooperativo do Brasil" }, { value: "757", name: "KEB" }];
+            bancosJson.forEach(function (item, i) {
+                $("select[name='NumeroBanco']").append(`<option value='${item.value}'>${item.value} - ${item.name}</option>`);
+            });
+            $("input[name='CPF']").mask("00000000000");
+            $("#dataPrevista").mask("00/00/0000");
+        });
+        function Salvar() {
+            var objStatus = {
+                CodPedido: '@Model.Pedido.CodPedido',
+                CodStatusPedido: $('#selecStatus').val(),
+                Observacao: $('#obsStatus').val()
+            };
+            var objPedido = {
+                CodPedido: '@Model.Pedido.CodPedido',
+                DataPrevista: $('#dataPrevista').val(),
+                CodigoRastreio: $('#codigoRastreio').val()
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/Pedido/Salvar',
+                data: {
+                    l: objStatus.CodStatusPedido != '0' ? objStatus : null,
+                    p: objPedido
+                },
+                success: function (r) {
+                    if (r.sucesso)
+                        window.location.reload();
+                    else
+                        alert(r.mensagem);
+                },
+                error: function (e) {
+                    alert(e.responseText);
+                }
+            });
+        }
+        function RemoverStatus(cod) {
+            if (cod > 0)
+            {
+                if (confirm('Você confirma esta operação?')) {
+                    $.ajax({
+                        type: 'GET',
+                        url: `/Pedido/RemoverStatus?codLogStatusPedido=${cod}`,
+                        success: function (r) {
+                            if (r.sucesso)
+                                window.location.reload();
+                            else
+                                alert(r.mensagem);
+                        },
+                        error: function (e) {
+                            alert(e.responseText);
+                        }
+                    });
+                }
+            }
+        }
+        function EnviarEmail() {
+            $.ajax({
+                type: 'GET',
+                url: '/Pedido/EnviarEmail?codPedido=@Model.Pedido.CodPedido',
+                success: function (r) {
+                    if (r.sucesso) {
+                        alert('Enviado com sucesso!');
+                        window.location.reload();
+                    }
+                    else
+                        alert(r.mensagem);
+                },
+                error: function (e) {
+                    alert(e.responseText);
+                }
+            });
+        }
+    </script>
+}

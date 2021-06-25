@@ -1,0 +1,195 @@
+﻿@{
+    ViewBag.Title = "Entrar";
+    ViewBag.Description = "O Login sera necessario para o usuario poder realizar os pedidos.";
+    ViewBag.Keywords = "AIO Pratas, Login, Acesso, Entrar, Logar, Recuperar, Senha";
+}
+<section class="bg0 p-t-104 p-b-116">
+    <div class="container">
+        <div class="flex-w flex-tr" style="justify-content: center;">
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <form id="formCad" method="post" action="/Usuario/Cadastro">
+                    <h4 class="mtext-105 cl2 txt-center p-b-30">Cadastrar-se</h4>
+                    <div class="bor8 m-b-20 how-pos4-parent">
+                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" name="Email" placeholder="E-mail" style="font-size: 16px;" id="cEmail" maxlength="90">
+                        <i class="how-pos4 pointer-none zmdi zmdi-email zmdi-hc-2x" style="position: absolute;top: calc(37% - 9px);left: 19px;"></i>
+                    </div>
+                    <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" onclick="Cadastrar(); return false;" id="btnCadastrarA" title="Cadastrar">
+                        Cadastrar
+                        <i class="fa fa-spinner fa-spin" style="margin-left: 5px;display:none;" id="btnCadastrar"></i>
+                    </button>
+                </form>
+            </div>
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <div id="dvLogin">
+                    <h4 class="mtext-105 cl2 txt-center p-b-30">
+                        Fazer Login
+                    </h4>
+                    <div class="bor8 m-b-20 how-pos4-parent">
+                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" name="Email" placeholder="E-mail ou CPF" style="font-size: 16px;" id="lEmail">
+                        <i class="how-pos4 pointer-none zmdi zmdi-account-o zmdi-hc-2x" style="position: absolute;top: calc(37% - 9px);left: 19px;"></i>
+                    </div>
+                    <div class="bor8 m-b-20 how-pos4-parent">
+                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="password" name="Senha" placeholder="Senha" style="font-size: 16px;" id="lSenha">
+                        <i class="how-pos4 pointer-none zmdi zmdi-key zmdi-hc-2x" style="position: absolute;top: calc(37% - 9px);left: 17px;"></i>
+                    </div>
+                    <div style="display:flex;margin-bottom:10px" title="Lembrar Senha">
+                        <input type="checkbox" id="lembraSenha" style="zoom:1.5;margin-right:4px;cursor:pointer" />
+                        <label for="lembraSenha" style="margin-top: -1px;cursor:pointer">Lembrar Senha</label>
+                    </div>
+                    <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" onclick="Logar()" id="btnLoginA" title="Entrar">
+                        Entrar
+                        <i class="fa fa-spinner fa-spin" style="margin-left: 5px;display:none;" id="btnLogin"></i>
+                    </button>
+                    <div style="text-align:center; padding-top:20px">
+                        <a onclick="$('#dvLogin').fadeOut(0);$('#dvRecuperarSenha').fadeIn();$('#rEmail').val($('#lEmail').val())" style="cursor:pointer;text-decoration:underline" title="Recuperar Senha">Recuperar Senha</a>
+                    </div>
+                </div>
+                <div id="dvRecuperarSenha" style="display:none">
+                    <h4 class="mtext-105 cl2 txt-center p-b-30">
+                        Recuperar Senha
+                    </h4>
+                    <div class="bor8 m-b-20 how-pos4-parent">
+                        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" name="Email" placeholder="Digite o seu E-mail" style="font-size: 16px;" id="rEmail">
+                        <i class="how-pos4 pointer-none zmdi zmdi-account-o zmdi-hc-2x" style="position: absolute;top: calc(37% - 9px);left: 19px;"></i>
+                    </div>
+                    <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" onclick="RecuperarSenha()" id="btnRecuperarA" title="Recuperar Senha">
+                        Recuperar Senha
+                        <i class="fa fa-spinner fa-spin" style="margin-left: 5px;display:none;" id="btnRecuperar"></i>
+                    </button>
+                    <div style="text-align:center; padding-top:20px">
+                        <a onclick="$('#dvLogin').fadeIn();$('#dvRecuperarSenha').fadeOut(0);" style="cursor:pointer;text-decoration:underline" title="Voltar">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script>
+        $(() => {
+            if (localStorage.getItem('emailUsuarioAio') != null && localStorage.getItem('senhaUsuarioAio') != null) {
+                $('#lEmail').val(localStorage.getItem('emailUsuarioAio'));
+                $('#lSenha').val(atob(localStorage.getItem('senhaUsuarioAio')));
+                $('#lembraSenha')[0].checked = true;
+            }
+            else {
+                localStorage.removeItem('emailUsuarioAio');
+                localStorage.removeItem('senhaUsuarioAio');
+            }
+            $('#cEmail').keypress(function (e) {
+                if (e.keyCode == 13)
+                    $('#btnCadastrarA').click();
+            });
+            $('#lSenha').keypress(function (e) {
+                if (e.keyCode == 13)
+                    $('#btnLoginA').click();
+            });
+        });
+        function Logar() {
+            var valid = true;
+            if ($('#lEmail').val().trim().length <= 0) {
+                $('#lEmail').css('border', '1px solid red');
+                valid = false;
+            } else $('#lEmail').css('border', '1px solid #e6e6e6');
+
+            if ($('#lSenha').val().trim().length <= 0) {
+                $('#lSenha').css('border', '1px solid red');
+                valid = false;
+            } else $('#lSenha').css('border', '1px solid #e6e6e6');
+
+            if (valid) {
+                $('#btnLogin').fadeIn(0);
+                $.ajax({
+                    type: 'POST',
+                    url: '/Usuario/Login',
+                    data: { Email: $('#lEmail').val().trim(), Senha: $('#lSenha').val() },
+                    success: function (r) {
+                        if (r.sucesso)
+                        {
+                            if ($('#lembraSenha')[0].checked) {
+                                localStorage.setItem('emailUsuarioAio', $('#lEmail').val().trim());
+                                localStorage.setItem('senhaUsuarioAio', btoa($('#lSenha').val()));
+                            }
+                            else {
+                                localStorage.removeItem('emailUsuarioAio');
+                                localStorage.removeItem('senhaUsuarioAio');
+                            }
+                            if (localStorage.getItem('goToCart') != null)
+                                CarregarCarrinhoUsuario(true);
+                            else 
+                                window.location.href = '/';
+                        }
+                        else {
+                            $('#btnLogin').fadeOut(0);
+                            swal("Atenção", r.mensagem, "error");
+                        }
+                    },
+                    error: function (e) {
+                        swal("Cadastro não realizado", "Erro ao tentar conectar-se ao servidor. Tente novamente.", "error");
+                        $('#btnLogin').fadeOut(0);
+                    }
+                });
+            }
+        }
+        function Cadastrar() {
+            $('#btnCadastrar').fadeIn(0);
+            var email = $('#cEmail').val().trim();
+            $('#cEmail').val(email);
+            if (ValidarEmail(email)) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Usuario/VerificarEmail',
+                    data: { Email: email },
+                    success: function (r) {
+                        if (r.sucesso)
+                            swal("Atenção", "Este e-mail já está cadastrado.", "error");
+                        else
+                            $('#formCad').submit();
+                        $('#btnCadastrar').fadeOut(0);
+                    },
+                    error: function (e) {
+                        $('#btnCadastrar').fadeOut(0);
+                        swal("Atenção", "Erro ao tentar conectar-se ao servidor. Tente novamente.", "error");
+                    }
+                });
+            }
+            else {
+                $('#btnCadastrar').fadeOut(0);
+                $('#cEmail').css('border', '1px solid red');
+            }
+        }
+        function RecuperarSenha() {
+            $('#btnRecuperar').fadeIn(0);
+            if (ValidarEmail($('#rEmail').val())) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Usuario/RecuperarSenha',
+                    data: { Email: $('#rEmail').val() },
+                    success: function (r) {
+                        if (r.sucesso) {
+                            swal("Recuperação enviada", r.mensagem, "success");
+                            $('#lEmail').val($('#rEmail').val());
+                            $('#dvRecuperarSenha').fadeOut(0);
+                            $('#dvLogin').fadeIn();
+                        }
+                        else
+                            swal("Atenção", r.mensagem, "error");
+                        $('#btnRecuperar').fadeOut(0);
+                    },
+                    error: function (e) {
+                        $('#btnRecuperar').fadeOut(0);
+                        swal("Atenção", "Erro ao tentar conectar-se ao servidor. Tente novamente.", "error");
+                    }
+                });
+            }
+            else {
+                $('#btnRecuperar').fadeOut(0);
+                $('#rEmail').css('border', '1px solid red');
+            }
+        }
+        function ValidarEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@@"]+(\.[^<>()\[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+    </script>
+}

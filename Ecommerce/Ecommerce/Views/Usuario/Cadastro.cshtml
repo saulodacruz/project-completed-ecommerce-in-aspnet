@@ -1,0 +1,487 @@
+﻿@model Models.Usuario
+@{
+    ViewBag.Title = "Cadastro";
+    ViewBag.Description = "No Cadastro ira preencher todas informações necessárias para conseguir realizar pedidos.";
+    ViewBag.Keywords = "AIO Pratas, Cadastro, Conta, Usuario, Login, Senha, Endereco, Entrega, Senha";
+}
+<style>
+    .cadInput {
+        padding: 0 28px;
+        font-size: 16px;
+    }
+        .cadInput::-webkit-input-placeholder {
+            color: rgba(62, 62, 62, 0.6313725490196078) !important;
+        }
+</style>
+<section class="bg0 p-t-104 p-b-116" style="padding-top: 50px;">
+    <div class="container">
+        <div class="flex-w flex-tr" style="justify-content: center;" id="dvCad1">
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <h4 class="mtext-105 cl2 txt-center p-b-30">
+                    Dados Pessoais
+                </h4>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput textTransformCapitalize" type="text" name="Nome" placeholder="Nome" maxlength="40">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput textTransformCapitalize" type="text" name="Sobrenome" placeholder="Sobrenome" maxlength="49">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="DataNascimento" placeholder="Data de Nascimento">
+                </div>
+                <div class="m-b-20 how-pos4-parent">
+                    <input class="bor8 stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="CPF" placeholder="CPF" maxlength="11" onblur="VerificarCPF()">
+                    <span style="color:red" id="msgErroCPF"></span>
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="Telefone" placeholder="Telefone">
+                </div>
+            </div>
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <h4 class="mtext-105 cl2 txt-center p-b-30">
+                    Dados de Acesso
+                </h4>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="Email" placeholder="E-mail" value="@Model.Email" maxlength="90">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="password" name="Senha" placeholder="Senha" maxlength="20">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="password" name="RepSenha" placeholder="Repita sua Senha" maxlength="20">
+                </div>
+                <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" onclick="Prosseguir()" id="btnProsseguir" title="Prosseguir">
+                    Prosseguir
+                </button>
+            </div>
+        </div>
+        <div class="flex-w flex-tr" style="justify-content: center;display:none" id="dvCad2">
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <h4 class="mtext-105 cl2 txt-center p-b-30">
+                    Seu endereço
+                </h4>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="CEP" placeholder="CEP" onblur="CarregarCEP($(this).val().toString())">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput textTransformCapitalize" type="text" name="Logradouro" placeholder="Endereço" maxlength="100">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="Numero" placeholder="Número" maxlength="10">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="Complemento" placeholder="Complemento" maxlength="50">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput textTransformCapitalize" type="text" name="Bairro" placeholder="Bairro" maxlength="45">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput textTransformCapitalize" type="text" name="Cidade" placeholder="Cidade" maxlength="32">
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <select name="UF" class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" style="border: none;">
+                        <option value="0" selected>Estado</option>
+                        <option value="AC">Acre</option>
+                        <option value="AL">Alagoas</option>
+                        <option value="AP">Amapá</option>
+                        <option value="AM">Amazonas</option>
+                        <option value="BA">Bahia</option>
+                        <option value="CE">Ceará</option>
+                        <option value="DF">Distrito Federal</option>
+                        <option value="ES">Espírito Santo</option>
+                        <option value="GO">Goiás</option>
+                        <option value="MA">Maranhão</option>
+                        <option value="MT">Mato Grosso</option>
+                        <option value="MS">Mato Grosso do Sul</option>
+                        <option value="MG">Minas Gerais</option>
+                        <option value="PA">Pará</option>
+                        <option value="PB">Paraíba</option>
+                        <option value="PR">Paraná</option>
+                        <option value="PE">Pernambuco</option>
+                        <option value="PI">Piauí</option>
+                        <option value="RJ">Rio de Janeiro</option>
+                        <option value="RN">Rio Grande do Norte</option>
+                        <option value="RS">Rio Grande do Sul</option>
+                        <option value="RO">Rondônia</option>
+                        <option value="RR">Roraima</option>
+                        <option value="SC">Santa Catarina</option>
+                        <option value="SP">São Paulo</option>
+                        <option value="SE">Sergipe</option>
+                        <option value="TO">Tocantins</option>
+                        <option value="EX">Estrangeiro</option>
+                    </select>
+                </div>
+                <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" onclick="ProsseguirFinal()" id="btnFinalizarA" title="Finalizar">
+                    Finalizar
+                    <i class="fa fa-spinner fa-spin" style="margin-left: 5px;display:none;" id="btnFinalizar"></i>
+                </button>
+                <p style="text-align:center; margin-top:15px; text-decoration:underline; cursor:pointer" onclick="Retornar()" title="Retornar">
+                    Retornar
+                </p>
+            </div>
+        </div>
+        <div class="flex-w flex-tr" style="justify-content: center;display:none" id="dvCad3">
+            <div class="size-210 bor10 p-lr-70 p-t-55 p-b-70 p-lr-15-lg w-full-md">
+                <h4 class="mtext-105 cl2 txt-center p-b-30" style="font-size: 20px !important;">
+                    Digite o código que enviamos no seu e-mail
+                </h4>
+                <div style="text-align: center;width:100%;margin-top: -26px;margin-bottom: 38px;">
+                    <span style="text-align: center;">Verifique sua caixa de Spam ou o seu Lixo eletrônico</span>
+                </div>
+                <div class="bor8 m-b-20 how-pos4-parent">
+                    <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30 cadInput" type="text" name="CodigoEmail" placeholder="Código" maxlength="4">
+                </div>
+                <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer" onclick="Verificar()" id="btnVerificar" title="Confirmar">
+                    Confirmar
+                    <i class="fa fa-spinner fa-spin" style="margin-left: 5px;display:none;" id="btnConfirmar"></i>
+                </button>
+                <p style="text-align:center; margin-top:15px; text-decoration:underline; cursor:pointer" onclick="RetornarParaEnd()" title="Retornar">
+                    Retornar
+                </p>
+                <p style="text-align:center; margin-top:15px; text-decoration:underline; cursor:pointer" onclick="EnviarEmail(true)" title="Enviar novamente">
+                    Enviar novamente
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script>
+        $('input[name="CodigoEmail"]').keypress(function (e) {
+            if (e.keyCode == 13)
+                $('#btnVerificar').click();
+        });
+        $(() => {
+            $('input[name="DataNascimento"]').mask('00/00/0000');
+            $('input[name="CPF"]').mask('00000000000');
+            $('input[name="Telefone"]').mask('(00) 00000-0009');
+            $('input[name="Telefone"]').blur(function (event) {
+                if ($(this).val().length == 15) {
+                    $('input[name="Telefone"]').mask('(00) 00000-0009');
+                } else {
+                    $('input[name="Telefone"]').mask('(00) 0000-00009');
+                }
+            });
+            $('input[name="CEP"]').mask('000000000');
+            $('input[name="RepSenha"]').keypress(function (e) {
+                if (e.keyCode == 13)
+                    $('#btnProsseguir').click();
+            });
+            $('input[name="Cidade"]').keypress(function (e) {
+                if (e.keyCode == 13)
+                    $('#btnFinalizarA').click();
+            });
+        });
+        var cpfJaExistente = false;
+        function CarregarCEP(cep) {
+            if (cep.length > 0) {
+                $.ajax({
+                    type: 'GET',
+                    url: 'https://viacep.com.br/ws/' + cep + '/json/',
+                    success: function (r) {
+                        if (JSON.stringify(r).indexOf("cep") > 0) {
+                            $('input[name="Logradouro"]').val(r.logradouro);
+                            $('input[name="Complemento"]').val(r.complemento);
+                            $('input[name="Bairro"]').val(r.bairro);
+                            $('input[name="Cidade"]').val(r.localidade);
+                            $('select[name="UF"]').val(r.uf);
+                        }
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                });
+            }
+        }
+        function Prosseguir() {
+            if (ValidarCad1()) {
+                $('#dvCad1').fadeOut(0);
+                $('#dvCad2').fadeIn();
+            }
+            UpScroll();
+        }
+        function ProsseguirFinal()
+        {
+            if (ValidarCad2()) {
+                $('#btnFinalizar').fadeIn(0);
+                EnviarEmail();
+            }
+            else 
+                UpScroll();
+        }
+        function Retornar() {
+            $('#dvCad2').fadeOut(0);
+            $('#dvCad1').fadeIn();
+            UpScroll();
+        }
+        function RetornarParaEnd() {
+            $('#dvCad3').fadeOut(0);
+            $('#dvCad2').fadeIn();
+            UpScroll();
+        }
+        function Finalizar() {
+            var usuario = {
+                Nome: $("input[name='Nome']").val().trim(),
+                Sobrenome: $("input[name='Sobrenome']").val().trim(),
+                DataNascimento: $("input[name='DataNascimento']").val().trim(),
+                CPF: $("input[name='CPF']").val().trim(),
+                Telefone: $("input[name='Telefone']").val().trim(),
+                Email: $("input[name='Email']").val().trim(),
+                Senha: $("input[name='Senha']").val().trim(),
+                CEP: $("input[name='CEP']").val().trim(),
+                Logradouro: $("input[name='Logradouro']").val().trim(),
+                Numero: $("input[name='Numero']").val().trim(),
+                Complemento: $("input[name='Complemento']").val().trim(),
+                Bairro: $("input[name='Bairro']").val().trim(),
+                Cidade: $("input[name='Cidade']").val().trim(),
+                UF: $("select[name='UF']").val().trim()
+            };
+            $.ajax({
+                type: 'POST',
+                url: '/Usuario/Cadastrar',
+                data: usuario,
+                success: function (r) {
+                    if (r.sucesso) {
+                        if (localStorage.getItem('goToCart') != null)
+                            CarregarCarrinhoUsuario(true);
+                        else
+                            window.location.href = '/';
+                    }
+                    else {
+                        $('#btnConfirmar').fadeOut(0);
+                        swal("Cadastro não realizado", r.mensagem, "error");
+                    }
+                },
+                error: function (e) {
+                    swal("Cadastro não realizado", "Erro ao tentar conectar-se ao servidor. Tente novamente.", "error");
+                    $('#btnConfirmar').fadeOut(0);
+                }
+            });
+        }
+        function Verificar() {
+            var codEm = $('input[name="CodigoEmail"]').val().trim();
+            if (codEm.length == 4) {
+                $('input[name="CodigoEmail"]').parent().css('border', '1px solid #e6e6e6');
+                $('#btnConfirmar').fadeIn(0);
+                $.ajax({
+                    type: 'POST',
+                    url: '/Usuario/VerificarCodigoEmail',
+                    data: { codigo: codEm, email: $("input[name='Email']").val() },
+                    success: function (r) {
+                        if (r.sucesso) {
+                            $('input[name="CodigoEmail"]').parent().css('border', '1px solid #3bff3b');
+                            Finalizar();
+                        }
+                        else {
+                            swal('Atenção', r.mensagem, 'error');
+                            $('#btnConfirmar').fadeOut(0);
+                        }
+                    },
+                    error: function (e){
+                        swal("Atenção", "Erro ao tentar conectar-se ao servidor. Tente novamente.", "error");
+                        $('#btnConfirmar').fadeOut(0);
+                    }
+                });
+            }
+            else 
+                $('input[name="CodigoEmail"]').parent().css('border', '1px solid red');
+        }
+        function ValidarCad1() {
+            var valido = true;
+            var nome = $("input[name='Nome']").val().trim();
+            var sobrenome = $("input[name='Sobrenome']").val().trim();
+            var dataNascimento = $("input[name='DataNascimento']").val().trim();
+            var cpf = $("input[name='CPF']").val().trim();
+            var telefone = $("input[name='Telefone']").val().trim();
+            var email = $("input[name='Email']").val().trim();
+            var senha = $("input[name='Senha']").val().trim();
+            var repSenha = $("input[name='RepSenha']").val().trim();
+
+            if (nome.length <= 0 || nome.length > 40) {
+                $("input[name='Nome']").parent().css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Nome']").parent().css('border', '1px solid #e6e6e6');
+
+            if (sobrenome.length <= 0 || sobrenome.length > 49) {
+                $("input[name='Sobrenome']").parent().css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Sobrenome']").parent().css('border', '1px solid #e6e6e6');
+
+            if (!ValidarData(dataNascimento)) {
+                $("input[name='DataNascimento']").parent().css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='DataNascimento']").parent().css('border', '1px solid #e6e6e6');
+
+            if (!ValidarCPF(cpf) || cpfJaExistente) {
+                $("input[name='CPF']").css('border', '1px solid red');
+                valido = false;
+            }
+            else {
+                $("input[name='CPF']").css('border', '1px solid #e6e6e6');
+            }
+
+            if (telefone.length < 14 || telefone.length > 15) {
+                $("input[name='Telefone']").parent().css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Telefone']").parent().css('border', '1px solid #e6e6e6');
+
+            if (!ValidarEmail(email)) {
+                $("input[name='Email']").parent().css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Email']").parent().css('border', '1px solid #e6e6e6');
+
+            if (senha.length <= 0 || senha.length > 20) {
+                $("input[name='Senha']").parent().css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Senha']").parent().css('border', '1px solid #e6e6e6');
+
+            if (repSenha.length <= 0 || repSenha.length > 20 || repSenha != senha) {
+                $("input[name='RepSenha']").parent().css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='RepSenha']").parent().css('border', '1px solid #e6e6e6');
+            
+            return valido;
+        }
+        function ValidarCad2() {
+            var valido = true;
+            var cep = $("input[name='CEP']").val().trim();
+            var logradouro = $("input[name='Logradouro']").val().trim();
+            var numero = $("input[name='Numero']").val().trim();
+            var complemento = $("input[name='Complemento']").val().trim();
+            var bairro = $("input[name='Bairro']").val().trim();
+            var cidade = $("input[name='Cidade']").val().trim();
+            var uf = $("select[name='UF']").val().trim();
+
+            if (cep.length <= 0 || cep.length > 8) {
+                $("input[name='CEP']").css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='CEP']").css('border', '1px solid #e6e6e6');
+
+            if (logradouro.length <= 0 || logradouro.length > 100) {
+                $("input[name='Logradouro']").css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Logradouro']").css('border', '1px solid #e6e6e6');
+
+            if (numero.length <= 0 || numero.length > 10) {
+                $("input[name='Numero']").css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Numero']").css('border', '1px solid #e6e6e6');
+
+            if (complemento.length > 50) {
+                $("input[name='Complemento']").css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Complemento']").css('border', '1px solid #e6e6e6');
+
+            if (bairro.length <= 0 || bairro.length > 45) {
+                $("input[name='Bairro']").css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Bairro']").css('border', '1px solid #e6e6e6');
+
+            if (cidade.length <= 0 || cidade.length > 32) {
+                $("input[name='Cidade']").css('border', '1px solid red');
+                valido = false;
+            }
+            else $("input[name='Cidade']").css('border', '1px solid #e6e6e6');
+
+            if (uf == "0" || uf.length > 2 || uf.length <= 0) {
+                $("select[name='UF']").css('border', '1px solid red');
+                valido = false;
+            }
+            else $("select[name='UF']").css('border', '1px solid #e6e6e6');
+
+            return valido;
+        }
+        function ValidarData(data) {
+            if (data == undefined || data.length < 10)
+                return false;
+            var d = data.substr(0, 2);
+            var m = data.substr(3, 2);
+            var y = data.substr(6, 4);
+            if (d > 31 || d <= 0 || m > 12 || m <= 0 || y < 1850)
+                return false;
+            return true;
+        }
+        function ValidarCPF(strCPF) {
+            if (strCPF < 14)
+                return false
+            strCPF = strCPF.replace('.', '').replace('.', '').replace('-', '');
+            var Soma;
+            var Resto;
+            Soma = 0;
+            if (strCPF == "00000000000") return false;
+
+            for (i = 1; i <= 9; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
+            Resto = (Soma * 10) % 11;
+
+            if ((Resto == 10) || (Resto == 11)) Resto = 0;
+            if (Resto != parseInt(strCPF.substring(9, 10))) return false;
+
+            Soma = 0;
+            for (i = 1; i <= 10; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+            Resto = (Soma * 10) % 11;
+
+            if ((Resto == 10) || (Resto == 11)) Resto = 0;
+            if (Resto != parseInt(strCPF.substring(10, 11))) return false;
+            return true;
+        }
+        function ValidarEmail(email) {
+            var re = /^(([^<>()\[\]\\.,;:\s@@"]+(\.[^<>()\[\]\\.,;:\s@@"]+)*)|(".+"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+        function EnviarEmail(enviarNovamente) {
+            $.ajax({
+                type: 'POST',
+                url: '/Usuario/EnviarCodigoEmail',
+                data: { email: $("input[name='Email']").val().trim(), nome: $("input[name='Nome']").val() },
+                success: function (r) {
+                    if (r.sucesso) {
+                        $('#btnFinalizar').fadeOut(0);
+                        $('#dvCad2').fadeOut(0);
+                        $('#dvCad3').fadeIn();
+                        UpScroll();
+                        if (enviarNovamente)
+                            swal('Código Enviado', 'Um novo código foi enviado para o seu e-mail.', 'success');
+                    }
+                    else {
+                        $('#btnFinalizar').fadeOut(0);
+                        swal('Atenção', r.mensagem, 'error');
+                    }
+                },
+                error: function (e) {
+                    swal("Atenção", "Erro ao tentar conectar-se ao servidor. Tente novamente.", "error");
+                    $('#btnFinalizar').fadeOut(0);
+                }
+            });
+        }
+        function VerificarCPF() {
+            $.ajax({
+                type: 'GET',
+                url: `/Usuario/VerificarCPF?cpf=${$("input[name='CPF']").val().trim()}`,
+                success: function (r) {
+                    if (!r.sucesso) {
+                        $("input[name='CPF']").css('border', '1px solid red');
+                        $('#msgErroCPF').text(r.mensagem);
+                        cpfJaExistente = true;
+                    }
+                    else {
+                        $("input[name='CPF']").css('border', '1px solid #e6e6e6');
+                        $('#msgErroCPF').text('');
+                        cpfJaExistente = false;
+                    }
+                }
+            });
+        }
+    </script>
+}

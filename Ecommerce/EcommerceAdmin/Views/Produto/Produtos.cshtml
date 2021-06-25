@@ -1,0 +1,73 @@
+﻿@model List<Models.Produto>
+@{
+    ViewBag.Title = "Produtos";
+}
+<style>
+    #produto a {
+        text-decoration: none !important;
+        color: unset !important;
+    }
+        #produto a:hover {
+            text-decoration: none !important;
+            color: unset !important;
+        }
+    table th, table td {
+        text-align: center;
+        vertical-align:middle !important
+    }
+</style>
+<div class="row">
+    <h3>Produtos</h3>
+</div>
+<br />
+<div class="row">
+    <a href="/Produto/Produto/" class="btn btn-default">Cadastrar</a>
+</div>
+<br />
+<div class="row">
+    <table id="produto" class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width: 100px !important;"></th>
+                <th>Nome</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Código</th>
+                <th>Atualizado</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    <a href="/Produto/Produto?codProduto=@item.CodProduto">
+                        @if (!string.IsNullOrWhiteSpace(item.UrlImgA))
+                        {<img src="@item.UrlImgASmall" style="max-width:100px"/>}
+                    </a>
+                </td>
+                <td>@item.Nome</td>
+                <td>@item.Descricao</td>
+                <td>@item.Valor</td>
+                <td>@item.CodProduto</td>
+                <td>@item.DataAtualizado.ToString("dd/MM/yyyy")</td>
+                <td style="color:red; text-align:center;cursor:pointer" onclick="if (confirm('Tem certeza que deseja remover?')){window.location.href='../Produto/Remover?codProduto=@item.CodProduto'}">X</td>
+                <td><a href="/Produto/Produto?codProduto=@item.CodProduto" class="btn btn-default">Ver</a></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts{
+    <script>
+        $('#produto').DataTable({
+            "order": [[4, "desc"]]
+        });
+        function Ver(cod) {
+            window.location.href = '/Produto/Produto?codProduto=' + cod;
+        }
+    </script>
+}

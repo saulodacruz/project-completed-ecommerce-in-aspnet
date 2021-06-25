@@ -1,0 +1,430 @@
+﻿@model Models.Produto
+@{
+    ViewBag.Title = "Produto";
+}
+<style>
+    fieldset {
+        padding: .35em .625em .75em !important;
+        margin: 0 2px !important;
+        border: 1px solid #c0c0c0 !important;
+    }
+
+    legend {
+        width: unset !important;
+        border-bottom: unset !important;
+    }
+    #categorias td, #categorias th {
+        text-align: center;
+    }
+</style>
+<div class="row">
+    <h3>Produto</h3>
+</div>
+<br />
+<div class="row">
+    <a href="/Produto/Produtos" class="btn btn-default">Retornar</a>&nbsp;
+    @if (Model.CodProduto > 0)
+    {
+        <a href="@System.Configuration.ConfigurationManager.AppSettings["AmbienteSite"]Produto/@Model.Nome.Replace(' ', '-')" class="btn btn-default" style="float: right;margin-right: 17px;" target="_blank">Ver</a>
+    }
+</div>
+<br />
+<h5 style="color:red">@ViewBag.Erro</h5>
+@using (Html.BeginForm("Produto", "Produto", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="row">
+        <div class="col-sm-4">
+            @if (Model.DataDesabilitado != null)
+            {
+                <div class="form-group">
+                    <label>Data Desabilitado: </label><span>@{((DateTime)Model.DataDesabilitado).ToString("dd/MM/aaaa");}</span>
+                </div>
+            }
+            <div class="form-group">
+                <label>Codigo: </label>@if (Model.CodProduto > 0)
+                {<span>@Model.CodProduto</span>}
+            </div>
+            <input type="hidden" name="Produto.CodProduto" value="@Model.CodProduto" />
+            <input type="hidden" name="Produto.UrlImgA" value="@Model.UrlImgA" id="UrlImgA" />
+            <input type="hidden" name="Produto.UrlImgB" value="@Model.UrlImgB" id="UrlImgB" />
+            <input type="hidden" name="Produto.UrlImgC" value="@Model.UrlImgC" id="UrlImgC" />
+            <input type="hidden" name="Produto.UrlImgD" value="@Model.UrlImgD" id="UrlImgD" />
+            <input type="hidden" name="Produto.UrlImgASmall" value="@Model.UrlImgASmall" id="UrlImgASmall" />
+            <input type="hidden" name="Produto.UrlImgASmall" value="@Model.UrlImgBSmall" id="UrlImgASmall" />
+            <div style="margin: -5px 0 -2px 0;">
+                <input id="chkProdutoEsgotado" name="Produto.ProdutoEsgotado" type="checkbox" style="margin: 11px -4px 10px 0;" @if (Model.ProdutoEsgotado) { <text> checked</text>} />
+                <label style="margin: 8px;" for="chkProdutoEsgotado">Produto Esgotado&nbsp;</label>
+            </div>
+            <div style="margin: -5px 0 -6px 0;">
+                <input id="chkFreteGratis" name="Produto.FreteGratis" type="checkbox" style="margin: 11px -4px 10px 0;" @if (Model.FreteGratis) { <text> checked</text>} />
+                <label style="margin: 8px;" for="chkFreteGratis">Frete Grátis&nbsp;</label>
+            </div>
+            <div style="margin-bottom: 7px;">
+                <input id="chkOcultarProduto" name="Produto.OcultarProduto" type="checkbox" style="margin: 11px -4px 10px 0;" @if (Model.OcultarProduto) { <text> checked</text>} />
+                <label style="margin: 8px;" for="chkOcultarProduto">Ocultar Produto&nbsp;</label>
+            </div>
+            <div class="form-group">
+                <label>Nome do Produto</label>
+                <input type="text" class="form-control" name="Produto.Nome" value="@Model.Nome" maxlength="200">
+            </div>
+            <div class="form-group">
+                <label>Descrição</label>
+                <textarea class="form-control" rows="3" name="Produto.Descricao" maxlength="500">@Model.Descricao</textarea>
+            </div>
+            <div class="form-group">
+                <label>Valor</label>
+                <input type="text" class="form-control" name="Produto.Valor" value="@Model.Valor">
+            </div>
+            <div class="form-group">
+                <label>Matéria Prima</label>
+                <input type="text" class="form-control" name="Produto.MateriaPrima" value="@Model.MateriaPrima" maxlength="200">
+            </div>
+            <div class="form-group">
+                <label>Altura (cm)</label>
+                <input type="text" class="form-control" name="Produto.Altura" value="@Model.Altura" maxlength="100">
+            </div>
+            <div class="form-group">
+                <label>Largura (cm)</label>
+                <input type="text" class="form-control" name="Produto.Largura" value="@Model.Largura" maxlength="100">
+            </div>
+            <div class="form-group">
+                <label>Comprimento (cm)</label>
+                <input type="text" class="form-control" name="Produto.Comprimento" value="@Model.Comprimento" maxlength="100">
+            </div>
+            <div class="form-group">
+                <label>Espessura (mm)</label>
+                <input type="text" class="form-control" name="Produto.Espessura" value="@Model.Espessura" maxlength="100">
+            </div>
+            <div class="form-group">
+                <label>Diâmetro (cm)</label>
+                <input type="text" class="form-control" name="Produto.Diametro" value="@Model.Diametro" maxlength="100">
+            </div>
+            <div class="form-group">
+                <label>Peso</label>
+                <input type="text" class="form-control" name="Produto.Peso" value="@Model.Peso" maxlength="100">
+            </div>
+            <div class="form-group">
+                <label>Tipo Embalagem</label>
+                <select class="form-control" name="Produto.CodTipoEmbalagem">
+                    <option value="0">Selecione..</option>
+                    @foreach (var item in ViewBag.TipoEmbalagem)
+                    {
+                        <option value="@item.CodTipoEmbalagem">@item.CodTipoEmbalagem</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Quantidade em Estoque</label>
+                <input type="text" class="form-control" name="Produto.QtdDisponiveis" value="@Model.QtdDisponiveis">
+            </div>
+            <div class="form-group">
+                <label>Valor Anterior</label>
+                <input type="text" class="form-control" name="Produto.ValorAnterior" value="@Model.ValorAnterior">
+            </div>
+            <div class="form-group">
+                <label>Valor Atacado</label>
+                <input type="text" class="form-control" name="Produto.ValorAtacado" value="@Model.ValorAtacado">
+            </div>
+            <div class="form-group">
+                <label>Observações BackOffice</label>
+                <textarea class="form-control" rows="3" name="Produto.ObsBackOffice" maxlength="2000">@Model.ObsBackOffice</textarea>
+            </div>
+            <div class="form-group">
+                <label>Relevância</label>
+                <input type="number" class="form-control" name="Produto.Relevancia" value="@Model.Relevancia">
+            </div>
+            <div class="form-group">
+                <small>Cadastrado em:</small>&nbsp;<small>@Model.DataCadastro.ToString("dd/MM/yyyy HH:mm")</small><br />
+                <small>Atualizado em:</small>&nbsp;<small>@Model.DataAtualizado.ToString("dd/MM/yyyy HH:mm")</small>
+            </div>
+            @if (Model.CodProduto > 0)
+            {
+                <div>
+                    <button class="btn btn-default" onclick="VerAvaliacoes(); return false;" style="margin:15px 0">Ver Avaliações</button>
+                </div>
+                <a onclick="Remover()" class="btn btn-danger">X</a>
+            }
+            <input type="submit" class="btn btn-default" value="Salvar" onclick="return Validar()" />
+        </div>
+        @if (Model.CodProduto > 0)
+        {
+            <div class="col-sm-8">
+                <fieldset>
+                    <legend>Observações</legend>
+                    <div class="col-sm-12" style="margin-bottom:15px">
+                        <input id="chkObrigatorio" type="checkbox" style="margin: 11px -4px 10px 0;" />
+                        <label style="margin: 8px;" for="chkObrigatorio">Obrigatório&nbsp;</label>
+                        <div style="display:flex">
+                            <select id="selecTipoObservacao" class="form-control" onchange="MostrarCombo()">
+                                <option selected>Selecione..</option>
+                                <option value="Combo">Combo</option>
+                                <option value="Texto">Texto</option>
+                            </select>
+                            &nbsp;&nbsp;
+                            <button class="btn btn-success" onclick="AdicionarObservacao(); return false;">+</button>
+                        </div>
+                        <br />
+                        <div>
+                            <input class="form-control" id="nome" placeholder="Nome" />
+                        </div>
+                        <br />
+                        <div id="divOpcoesCombo" style="display:none">
+                            <input class="form-control" id="opcoesCombo" placeholder="Opção 1; Opção 2; Opção 3" />
+                        </div>
+                        <br />
+                        <table id="observacoes">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Nome</th>
+                                    <th>Opções no Combo</th>
+                                    <th>Obrigatório</th>
+                                    <th>Código</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.ProdutoObservacoes != null)
+                                {
+                                    foreach (var item in Model.ProdutoObservacoes.OrderBy(x => x.CodProdutoObservacoes))
+                                    {
+                                        <tr>
+                                            <td>@item.Tipo</td>
+                                            <td>@item.Nome</td>
+                                            <td>@item.OpcoesCombo</td>
+                                            <td>
+                                                @if (item.Obrigatorio)
+                                                {<span>Sim</span>}
+                                                else
+                                                { <span>Não</span>}
+                                            </td>
+                                            <td>@item.CodProdutoObservacoes</td>
+                                            <td style="color:red; text-align:center; cursor:pointer" onclick="RemoverObservacao(@item.CodProdutoObservacoes)">X</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+                <br />
+                <fieldset>
+                    <legend>Categorias</legend>
+                    <div class="col-sm-12" style="margin-bottom:15px">
+                        <div style="display:flex">
+                            <select id="selecCategoria" class="form-control">
+                                <option selected value="0">Selecione..</option>
+                                @foreach (var item in ViewBag.Categorias)
+                                {
+                                    <option value="@item.CodCategoria">@item.Nome</option>
+                                }
+                            </select>
+                            <input id="chkCategoriaPrincipal" type="checkbox" style="margin: 11px -4px 10px 14px;" />
+                            <label style="margin: 8px;" for="chkCategoriaPrincipal">Categoria Principal&nbsp;</label>
+                            <button class="btn btn-success" onclick="AdicionarCategoria(); return false;">+</button>
+                        </div>
+                        <br />
+                        <table id="categorias">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Código</th>
+                                    <th>Principal</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Categorias != null)
+                                {
+                                    foreach (var item in Model.Categorias)
+                                    {
+                                        <tr>
+                                            <td>@item.Nome</td>
+                                            <td>@item.Descricao</td>
+                                            <td>@item.CodCategoria</td>
+                                            <td>
+                                                @if (item.CategoriaPrincipal)
+                                                {<text>Sim</text>}
+                                            else
+                                            { <text>Não</text>}
+                                            </td>
+                                            <td style="color:red; text-align:center; cursor:pointer" onclick="RemoverCategoria(@item.CodCategoria)">X</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+                <br />
+                <fieldset>
+                    <legend>Imagens</legend>
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="form-group col-sm-6">
+                                    @if (!string.IsNullOrWhiteSpace(Model.UrlImgASmall))
+                                    {
+                                        <h4 class="divImagemASmall" style="color:red; cursor:pointer;" onclick="$('.divImagemASmall').fadeOut();$('#UrlImgASmall').val('')">X</h4>
+                                        <a href="@Model.UrlImgASmall" target="_blank"><img class="divImagemASmall" src="@Model.UrlImgASmall" style="max-width: 300px;" /></a>
+                                    }
+                                    <label for="imagemASmall">Primeira Imagem Small</label>
+                                    <input type="file" id="imagemASmall" name="FileImagemASmall">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group col-sm-6">
+                                    @if (!string.IsNullOrWhiteSpace(Model.UrlImgBSmall))
+                                    {
+                                        <h4 class="divImagemBSmall" style="color:red; cursor:pointer;" onclick="$('.divImagemBSmall').fadeOut();$('#UrlImgBSmall').val('')">X</h4>
+                                        <a href="@Model.UrlImgBSmall" target="_blank"><img class="divImagemBSmall" src="@Model.UrlImgBSmall" style="max-width: 300px;" /></a>
+                                    }
+                                    <label for="imagemBSmall">Segunda Imagem Small</label>
+                                    <input type="file" id="imagemBSmall" name="FileImagemBSmall">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group col-sm-6">
+                                    @if (!string.IsNullOrWhiteSpace(Model.UrlImgA))
+                                    {
+                                        <h4 class="divImagemA" style="color:red; cursor:pointer;" onclick="$('.divImagemA').fadeOut();$('#UrlImgA').val('')">X</h4>
+                                        <a href="@Model.UrlImgA" target="_blank"><img class="divImagemA" src="@Model.UrlImgA" style="max-width: 300px;"/></a>
+                                    }
+                                    <label for="imagemA">Primeira Imagem</label>
+                                    <input type="file" id="imagemA" name="FileImagemA">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group col-sm-6">
+                                    @if (!string.IsNullOrWhiteSpace(Model.UrlImgB))
+                                    {
+                                        <h4 class="divImagemB" style="color:red; cursor:pointer;" onclick="$('.divImagemB').fadeOut();$('#UrlImgB').val('')">X</h4>
+                                        <a href="@Model.UrlImgB" target="_blank"><img class="divImagemB" src="@Model.UrlImgB" style="max-width: 300px;" /></a>
+                                    }
+                                    <label for="imagemB">Segunda Imagem</label>
+                                    <input type="file" id="imagemB" name="FileImagemB">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group col-sm-6">
+                                    @if (!string.IsNullOrWhiteSpace(Model.UrlImgC))
+                                    {
+                                        <h4 class="divImagemC" style="color:red; cursor:pointer;" onclick="$('.divImagemC').fadeOut();$('#UrlImgC').val('')">X</h4>
+                                        <a href="@Model.UrlImgC" target="_blank"><img class="divImagemC" src="@Model.UrlImgC" style="max-width: 300px;" /></a>
+                                    }
+                                    <label for="imagemC">Terceira Imagem</label>
+                                    <input type="file" id="imagemC" name="FileImagemC">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group col-sm-6">
+                                    @if (!string.IsNullOrWhiteSpace(Model.UrlImgD))
+                                    {
+                                        <h4 class="divImagemD" style="color:red; cursor:pointer;" onclick="$('.divImagemD').fadeOut();$('#UrlImgD').val('')">X</h4>
+                                        <a href="@Model.UrlImgD" target="_blank"><img class="divImagemD" src="@Model.UrlImgD" style="max-width: 300px;" /></a>
+                                    }
+                                    <label for="imagemD">Quarta Imagem</label>
+                                    <input type="file" id="imagemD" name="FileImagemD">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+            </div>
+        }
+    </div>
+}
+@if (Model.CodProduto > 0)
+{
+    <div class="modal fade" id="modalAvaliacoes" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width: 90%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Avaliações</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped" id="tableAsync">
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script>
+        $(() => {
+            console.log('@Model.CodTipoEmbalagem');
+            $('select[name="Produto.CodTipoEmbalagem"]').val('@Model.CodTipoEmbalagem');
+            if ($('select[name="Produto.CodTipoEmbalagem"]').val() == null)
+                $('select[name="Produto.CodTipoEmbalagem"]').val("A");
+            $('input[name="Produto.QtdDisponiveis"]').mask("0000000000");
+        });
+        $('#categorias').DataTable({
+            "order": [[2, "desc"]],
+            searching: false, paging: false, info: false
+        });
+        $('#observacoes').DataTable({
+            "order": [[4, "asc"]],
+            searching: false, paging: false, info: false
+        });
+        function Remover() {
+            if (confirm("Tem certeza que deseja remover?"))
+                window.location.href = '@Url.Action("Remover", "Produto", new { codProduto = Model.CodProduto })';
+        }
+        function RemoverCategoria(cod) {
+            if (confirm("Tem certeza que deseja remover?"))
+                window.location.href = '../Categoria/RemoverProdutoCategoria?codProduto=@Model.CodProduto'+'&codCategoria='+cod;
+        }
+        function AdicionarCategoria() {
+            if ($('#selecCategoria').val() != "0") {
+                var cod = $('#selecCategoria').val();
+                window.location.href = '../Categoria/AdicionarProdutoCategoria?codProduto=@Model.CodProduto' + '&codCategoria=' + cod + '&categoriaPrincipal=' + $('#chkCategoriaPrincipal').is(':checked');
+            }
+        }
+        function MostrarCombo() {
+            if ($('#selecTipoObservacao').val() == 'Combo')
+                $('#divOpcoesCombo').fadeIn();
+            else
+                $('#divOpcoesCombo').fadeOut(0);
+        }
+        function RemoverObservacao(cod) {
+            if (confirm("Tem certeza que deseja remover?"))
+                window.location.href = '../Produto/RemoverObservacao?codProduto=@Model.CodProduto&codProdutoObservacoes=' + cod;
+        }
+        function AdicionarObservacao() {
+            if ($('selecTipoObservacao').val() == 'Combo')
+                window.location.href = '/Produto/AdicionarObservacao?codProduto=@Model.CodProduto&nome=' + $('#nome').val() + '&tipoObservacao=' + $('#selecTipoObservacao').val() + '&opcoesCombo=' + $('#opcoesCombo').val() + '&obrigatorio=' + $('#chkObrigatorio').is(':checked');
+            else
+                window.location.href = '/Produto/AdicionarObservacao?codProduto=@Model.CodProduto&nome=' + $('#nome').val() + '&tipoObservacao=' + $('#selecTipoObservacao').val() + '&opcoesCombo=' + $('#opcoesCombo').val() + '&obrigatorio=' + $('#chkObrigatorio').is(':checked');
+        }
+        function VerAvaliacoes() {
+            $.ajax({
+                type: 'GET',
+                url: '/Produto/ObterAvaliacoes?codProduto=@Model.CodProduto',
+                success: function (r) {
+                    $('#tableAsync').html(r);
+                    $('#modalAvaliacoes').modal('show');     
+                }
+            });
+        }
+        function RemoverAvaliacao(cod) {
+            if (confirm('Tem certeza que deseja remover?'))
+                window.location.href = '/Produto/RemoverAvaliacao?codAvaliacao='+cod+'&codProduto=@Model.CodProduto';
+        }
+        function Validar() {
+            if ($('select[name="Produto.CodTipoEmbalagem"]').val() == "0") {
+                $('select[name="Produto.CodTipoEmbalagem"]').css('border', '1px solid red');
+                return false;
+            }
+        }
+    </script>
+}

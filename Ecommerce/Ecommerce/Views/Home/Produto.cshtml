@@ -1,0 +1,382 @@
+﻿@model Models.Produto
+@{
+    ViewBag.Title = Model.Nome;
+    ViewBag.Description = Model.Descricao.Replace("ç", "c").Replace("ã", "a");
+    ViewBag.Keywords = Model.Nome.Replace(" de ", " ").Replace(" com ", " ").Replace(" a ", " ").Replace("ç", "c").Replace("ã", "a");
+    var categoriaPrincipal = Model.Categorias == null ? null : Model.Categorias.Where(x => x.CategoriaPrincipal).FirstOrDefault();
+}
+<style>
+    option {
+        padding: 25px 0;
+    }
+</style>
+<!-- breadcrumb -->
+<div class="container">
+    <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+        <a href="/" class="stext-109 cl8 hov-cl1 trans-04" title="Início">
+            Início
+            <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+        </a>
+        @if (categoriaPrincipal != null)
+        {
+            <input type="hidden" id="codsCategoria" value="@string.Join("&codsCategoria=",Model.Categorias.Select(x => x.CodCategoria).ToArray())"/>
+            <a href="/Produtos/@categoriaPrincipal.Nome" class="stext-109 cl8 hov-cl1 trans-04" title="@categoriaPrincipal.Nome">
+                @categoriaPrincipal.Descricao  
+                <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+            </a>
+        }
+        <span class="stext-109 cl4">
+            @Model.Nome
+        </span>
+    </div>
+</div>
+
+<!-- Product Detail -->
+<section class="sec-product-detail bg0 p-t-65 p-b-60" style="padding-bottom:0;padding-top: 28px;">
+    <input type="hidden" id="cdPd" value="@Model.CodProduto" />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-lg-7 p-b-30">
+                <div class="p-l-25 p-r-30 p-lr-0-lg">
+                    <div class="wrap-slick3 flex-sb flex-w">
+                        <div class="wrap-slick3-dots"></div>
+                        <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+                        <div class="slick3 gallery-lb">
+                            @if (!string.IsNullOrWhiteSpace(Model.UrlImgA))
+                            {
+                                <div class="item-slick3" data-thumb="@Model.UrlImgA" onerror="imgsErrors = true">
+                                    <div class="wrap-pic-w pos-relative">
+                                        <img src="@Model.UrlImgA" id="imgA">
+                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="@Model.UrlImgA">
+                                            <i class="fa fa-expand"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.UrlImgB))
+                            {
+                                <div class="item-slick3" data-thumb="@Model.UrlImgB" onerror="imgsErrors = true">
+                                    <div class="wrap-pic-w pos-relative">
+                                        <img src="@Model.UrlImgB">
+                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="@Model.UrlImgB">
+                                            <i class="fa fa-expand"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.UrlImgC))
+                            {
+                                <div class="item-slick3" data-thumb="@Model.UrlImgC">
+                                    <div class="wrap-pic-w pos-relative">
+                                        <img src="@Model.UrlImgC" onerror="imgsErrors = true">
+                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="@Model.UrlImgC">
+                                            <i class="fa fa-expand"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(Model.UrlImgD))
+                            {
+                                <div class="item-slick3" data-thumb="@Model.UrlImgD">
+                                    <div class="wrap-pic-w pos-relative" onerror="imgsErrors = true">
+                                        <img src="@Model.UrlImgD">
+                                        <a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="@Model.UrlImgD">
+                                            <i class="fa fa-expand"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-5 p-b-30">
+                <div class="p-r-50 p-t-5 p-lr-0-lg">
+                    <h4 class="mtext-105 cl2 js-name-detail p-b-14">
+                        @Model.Nome
+                    </h4>
+                    <span class="mtext-106 cl2">
+                        R$ @Model.Valor.ToString().Replace(".", ",")
+                        @if (Model.ValorAnterior > 0)
+                        {
+                            <span style="color: red; position: relative; font-size: 13px; text-decoration: line-through; top: -5px; left: 3px;">R$ @Model.ValorAnterior.ToString().Replace(".", ",")</span>
+                        }
+                        <br />
+                        <span class="stext-105">
+                            ou 6x de <span class="price">R$@(Math.Round(Model.Valor / 6, 2))</span> s/ juros.
+                        </span>
+                    </span>
+                     
+                    @if (Model.FreteGratis)
+                    {
+                        <h6 style="color: green;margin-top: 15px;" class="mtext-106">
+                            FRETE GRÁTIS
+                        </h6>
+                    }
+                    <div class="p-t-33">
+                        @if (Model.ProdutoObservacoes != null)
+                        {
+                            foreach (var item in Model.ProdutoObservacoes.OrderBy(x => x.CodProdutoObservacoes))
+                            {
+                                if (item.Tipo == "Combo")
+                                {
+                                    <div class="flex-w flex-r-m p-b-10" style="width:100%">
+                                        <select class="form-control observacoes" obrigatorio="@item.Obrigatorio.ToString()" nome="@item.Nome" tipo="Combo" style="border: 1px solid rgb(230, 230, 230);height: 44px;">
+                                            <option value="0">@item.Nome</option>
+                                            @{
+                                                var opcoes = item.OpcoesCombo.Split(';');
+                                                for (int i = 0; i < opcoes.Length; i++)
+                                                {
+                                                    <option value="@opcoes[i]">@opcoes[i]</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                }
+                                else if (item.Tipo == "Texto")
+                                {
+                                    <div class="flex-w flex-r-m p-b-10" style="width:100%">
+                                        <div class="size-204 respon6-next" style="width:100%">
+                                            <div class="wrap-input1 w-full p-b-4" style="margin: 8px 0;">
+                                                <input class="input1 bg-none plh1 stext-107 cl7 observacoes" type="text" nome="@item.Nome" placeholder="@item.Nome" obrigatorio="@item.Obrigatorio.ToString()" tipo="Texto">
+                                                <div class="focus-input1 trans-04"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                        <div class="flex-w flex-r-m p-b-12">
+                            <div class="size-204 flex-w flex-m respon6-next" style="width:100%;justify-content: center;">
+                                <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                    <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                        <i class="fs-16 zmdi zmdi-minus"></i>
+                                    </div>
+                                    <input class="mtext-104 cl3 txt-center num-product" type="number" name="qtd" value="1">
+                                    <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                        <i class="fs-16 zmdi zmdi-plus"></i>
+                                    </div>
+                                </div>
+                                @if (Model.ProdutoEsgotado)
+                                {
+                                    <small class="flex-c-m size-101 bor1 p-lr-15 trans-04 js-addcart-detail" style="width: 100%;margin-top: 17px;color:red">
+                                        PRODUTO ESGOTADO TEMPORARIAMENTE!
+                                    </small>
+                                }
+                                else if (!Model.OcultarProduto)
+                                {
+                                    <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" style="width: 100%;margin-top: 17px;font-size: 20px;" onclick="Comprar(@Model.CodProduto, '@Model.Nome', '@Model.Valor.ToString().Replace(".",",")', parseInt(document.getElementsByName('qtd')[0].value), '@Model.UrlImgASmall', '/Produto/@Model.Nome.Replace(" ", "-")')" title="Comprar">
+                                        COMPRAR
+                                    </button>
+                                    <button class="flex-c-m stext-101 cl0 size-101 bg3 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" style="width: 100%;margin-top: 17px;" onclick="AddCarrinho(@Model.CodProduto, '@Model.Nome', '@Model.Valor.ToString().Replace(".",",")', parseInt(document.getElementsByName('qtd')[0].value), '@Model.UrlImgASmall', '/Produto/@Model.Nome.Replace(" ", "-")')" title="Adicionar ao Carrinho">
+                                        ADICIONAR AO CARRINHO
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="p-t-33" style="padding-top: 13px;">
+                            <div class="flex-w flex-r-m p-b-10" style="width:100%;padding-bottom: 0;">
+                                <div class="size-204 respon6-next" style="width:100%;display: flex;">
+                                    <div class="wrap-input1 w-full p-b-4" style="margin: 8px 0;width:60%">
+                                        <input class="input1 bg-none plh1 stext-107 cl7" type="text" placeholder="Digite o seu CEP" id="cep">
+                                        <div class="focus-input1 trans-04"></div>
+                                    </div>
+                                    <button class="flex-c-m stext-101 cl0 size-101 bg3 bor1 hov-btn1 p-lr-15 trans-04" style="font-size: 14px; min-width: 170px; margin-left: 11px; height: 37px;" id="btnCalcularFrete" onclick="CalcularFrete()" title="Calcular Frete">
+                                        Calcular Frete
+                                        <i class="fa fa-spinner fa-spin" style="margin-left: 5px;display:none;" id="iconBtnCalcularFrete"></i>
+                                    </button>
+                                </div>
+                                <div class="size-204 respon6-next" style="width:100%;display: flex;display:none" id="divFrete">
+                                    <table>
+                                        <tr id="trSEDEX">
+                                            <td style="padding-bottom: 10px;">
+                                                <div style="height: 17px;display: flex;">
+                                                    <label for="btnSEDEX">SEDEX <b>R$ <span id="valorSEDEX">0</span></b></label>
+                                                </div>
+                                                <small>
+                                                    Entrega em até <b id="qtdDiasSEDEX">0</b> dias úteis
+                                                </small>
+                                            </td>
+                                        </tr>
+                                        <tr id="trPAC">
+                                            <td>
+                                                <div style="height: 17px;display: flex;">
+                                                    <label for="btnPAC">PAC <b>R$ <span id="valorPAC">0</span></b></label>
+                                                </div>
+                                                <small>
+                                                    Entrega em até <b id="qtdDiasPAC">0</b> dias úteis
+                                                </small>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bor10 m-t-50 p-t-43 p-b-40">
+            <!-- Tab01 -->
+            <div class="tab01">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    @*<li class="nav-item p-b-10">
+                        <a class="nav-link active" data-toggle="tab" href="#Descricao" role="tab">Descrição</a>
+                    </li>*@
+                    <li class="nav-item p-b-10">
+                        <a class="nav-link active" data-toggle="tab" href="#informacoes" role="tab">Informações Adicionais</a>
+                    </li>
+                    <li class="nav-item p-b-10">
+                        <a class="nav-link" data-toggle="tab" href="#avaliacoes" role="tab">
+                            Avaliações <span id="countAvaliacoes"></span>
+                        </a>
+                    </li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content p-t-43">
+                    @*<div class="tab-pane fade show active" id="Descricao" role="tabpanel">
+                        <div class="how-pos2 p-lr-15-md">
+                            <p class="stext-102 cl6">
+                                @Model.Descricao
+                            </p>
+                        </div>
+                    </div>*@
+                    <div class="tab-pane fade show active" id="informacoes" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
+                                <ul class="p-lr-28 p-lr-15-sm">
+                                    @if (!string.IsNullOrWhiteSpace(Model.MateriaPrima))
+                                    {
+                                        <li class="flex-w flex-t p-b-7">
+                                            <span class="stext-102 cl3 size-205">
+                                                Matéria Prima
+                                            </span>
+                                            <span class="stext-102 cl6 size-206">
+                                                @Model.MateriaPrima
+                                            </span>
+                                        </li>
+                                    }
+                                    @if (Model.Altura > 0)
+                                    {
+                                        <li class="flex-w flex-t p-b-7">
+                                            <span class="stext-102 cl3 size-205">
+                                                Altura
+                                            </span>
+                                            <span class="stext-102 cl6 size-206">
+                                                @Model.Altura cm
+                                            </span>
+                                        </li>
+                                    }
+                                    @if (Model.Largura > 0)
+                                    {
+                                        <li class="flex-w flex-t p-b-7">
+                                            <span class="stext-102 cl3 size-205">
+                                                Largura
+                                            </span>
+                                            <span class="stext-102 cl6 size-206">
+                                                @Model.Largura
+                                            </span>
+                                        </li>
+                                    }
+                                    @if (Model.Comprimento > 0)
+                                    {
+                                        <li class="flex-w flex-t p-b-7">
+                                            <span class="stext-102 cl3 size-205">
+                                                Comprimento
+                                            </span>
+                                            <span class="stext-102 cl6 size-206">
+                                                @Model.Comprimento cm
+                                            </span>
+                                        </li>
+                                    }
+                                    @if (Model.Espessura > 0)
+                                    {
+                                        <li class="flex-w flex-t p-b-7">
+                                            <span class="stext-102 cl3 size-205">
+                                                Espessura
+                                            </span>
+                                            <span class="stext-102 cl6 size-206">
+                                                @Model.Espessura mm
+                                            </span>
+                                        </li>
+                                    }
+                                    @if (Model.Diametro > 0)
+                                    {
+                                        <li class="flex-w flex-t p-b-7">
+                                            <span class="stext-102 cl3 size-205">
+                                                Diâmetro
+                                            </span>
+                                            <span class="stext-102 cl6 size-206">
+                                                @Model.Diametro cm
+                                            </span>
+                                        </li>
+                                    }
+                                    @if (Model.Peso > 0)
+                                    {
+                                        <li class="flex-w flex-t p-b-7">
+                                            <span class="stext-102 cl3 size-205">
+                                                Peso
+                                            </span>
+                                            <span class="stext-102 cl6 size-206">
+                                                @Model.Peso kg
+                                            </span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="avaliacoes" role="tabpanel">
+                        <div class="row">
+                            <div class="col-sm-10 col-md-8 col-lg-6 m-lr-auto">
+                                <div class="p-b-30 m-lr-15-sm">
+                                    <!-- Review -->
+                                    <div id="divAvaliacoes">
+                                    </div>
+                                    <div class="w-full" id="divAvaliacao">
+                                        <div class="flex-w flex-m p-t-50 p-b-23">
+                                            <span class="stext-102 cl3 m-r-16">
+                                                Sua Avaliação
+                                            </span>
+                                            <span class="wrap-rating fs-18 cl11 pointer">
+                                                <i class="item-rating pointer zmdi zmdi-star-outline" onclick="Estrela = 1"></i>
+                                                <i class="item-rating pointer zmdi zmdi-star-outline" onclick="Estrela = 2"></i>
+                                                <i class="item-rating pointer zmdi zmdi-star-outline" onclick="Estrela = 3"></i>
+                                                <i class="item-rating pointer zmdi zmdi-star-outline" onclick="Estrela = 4"></i>
+                                                <i class="item-rating pointer zmdi zmdi-star-outline" onclick="Estrela = 5"></i>
+                                                <input class="dis-none" type="number" name="rating">
+                                            </span>
+                                        </div>
+                                        <div class="row p-b-25">
+                                            <div class="col-12 p-b-5">
+                                                <label class="stext-102 cl3" for="review">Seu Comentário</label>
+                                                <textarea class="size-110 bor8 stext-102 cl2 p-lr-20 p-tb-10" id="comentario" maxlength="250"></textarea>
+                                            </div>
+                                        </div>
+                                        <button class="flex-c-m stext-101 cl0 size-112 bg7 bor11 hov-btn3 p-lr-15 trans-04 m-b-10" onclick="Avaliar()">
+                                            Avaliar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
+    </div>
+</section>
+
+<div id="divProdutosA" style="min-height:120px;margin-top: 50px;margin-bottom:50px">
+    <div class="lds-ellipsis" id="loaderDivProdutosA" style="width: 80px;height: 80px;position: relative;left: 50%;right: 50%;top: 50%;z-index: 100000000;transform: translate(-50%,-50%);"><div></div><div></div><div></div><div></div></div>
+</div>
+
+@section scripts{
+    <script>
+       var Estrela=0;function Comprar(e,a,t,o,r,s){AddCarrinho(e,a,t,o,r,s,!1,!0)}function Validar(){var e=!0;for(i=0;i<$(".observacoes").length;i++){var a=$(".observacoes")[i];"True"==a.getAttribute("obrigatorio")&&("0"==a.value||null==a.value||""==a.value.trim()?("Combo"==a.getAttribute("tipo")?a.style.border="1px solid red":a.parentElement.style.borderBottom="2px solid red",e&&(e=!1)):"Combo"==a.getAttribute("tipo")?a.style.border="1px solid #e6e6e6":a.parentElement.style.borderBottom="2px solid rgba(204, 204, 204, 0.66)")}return e}function Avaliar(){Estrela>0&&$("#comentario").val().trim().length>0?$.ajax({type:"POST",url:"/Home/SalvarAvaliacao",data:{CodUsuario:atob(getCookie("aiopcod")),CodProduto:$("#cdPd").val(),Estrelas:Estrela,Comentario:$("#comentario").val()},success:function(e){if(e.sucesso){if(""==$("#countAvaliacoes").text())$("#countAvaliacoes").append("(1)");else{var a="("+(parseInt($("#countAvaliacoes").text().replace("(","").replace(")",""))+1)+")";$("#countAvaliacoes").empty(),$("#countAvaliacoes").append(a)}for(var t='<div class="flex-w flex-t p-b-68" style="padding: 0;padding-top:10px"><div class="size-207"><div class="flex-w flex-sb-m p-b-17" style="padding: 0;"><span class="mtext-107 cl2 p-r-20">'+e.obj.Usuario.Nome+'</span><span class="fs-18 cl11">',o=0;o<e.obj.Estrelas;o++)t+=' <i class="zmdi zmdi-star"></i>';for(o=0;o<5-e.obj.Estrelas;o++)t+=' <i class="zmdi zmdi-star-outline"></i>';t+='</span></div><p class="stext-102 cl6">'+e.obj.Comentario+"</p></div></div><br />",$("#divAvaliacoes").append(t),swal("Avaliação realizada","Muito obrigado pelo seu feedback!","success"),$("#comentario").val("")}else swal("Avaliação não realizada",e.mensagem,"warning")},error:function(e){swal("Avaliação não realizada","Tente novamente.","warning")}}):swal("Atenção","Preenche sua avaliação corretamente.","warning")}function CarregarAvaliacoes(){$.ajax({type:"GET",url:"/Home/ObterAvaliacoes?codProduto="+$("#cdPd").val(),success:function(e){e.sucesso&&(e.obj.length>0&&$("#countAvaliacoes").append("("+e.obj.length+")"),e.obj.forEach(function(e,a){var t="";for(a=0;a<e.Estrelas;a++)t+='<i class="zmdi zmdi-star"></i> ';var o="";for(a=0;a<5-e.Estrelas;a++)o+='<i class="zmdi zmdi-star-outline"></i> ';$("#divAvaliacoes").append('<div class="flex-w flex-t p-b-68" style="padding: 0;padding-top:10px">    <div class="size-207">        <div class="flex-w flex-sb-m p-b-17" style="padding: 0;">            <span class="mtext-107 cl2 p-r-20">'+e.Usuario.Nome+'            </span>            <span class="fs-18 cl11">'+t+o+'            </span>        </div>        <p class="stext-102 cl6">            '+e.Comentario+"        </p>    </div></div><br />")}),CarregarProdutos("Produtos Relacionados","divProdutosA",$("#codsCategoria").val(),"loaderDivProdutosA"))}})}function AddCarrinho(e,a,t,o,r,s,l=!1,n=!1){if(Validar()){var c=" ";for(i=0;i<$(".observacoes").length;i++){var d=$(".observacoes")[i];"text"==d.type?""!=d.value.trim()&&(c+=d.placeholder+": "+d.value+" / "):"0"!=d.value&&(c+=d.getAttribute("nome")+": "+d.value+" / ")}c.length>1&&(c=c.trim().substr(0,c.trim().length-1).trim()),AddCar(e,a,t,o,r,s,c,l,n)}}function CalcularFrete(){$("#iconBtnCalcularFrete").fadeIn(0),$.ajax({type:"GET",url:`/Home/CalcularFrete?codProduto=${$("#cdPd").val()}&cep=${$("#cep").val()}`,success:function(e){e.sucesso?($("#divFrete").fadeIn(0),null!=e.obj.Frete.SEDEX?($("#trSEDEX").fadeIn(0),$("#valorSEDEX").text(e.obj.Frete.SEDEX.price.replace(".",",")),$("#qtdDiasSEDEX").text(e.obj.Frete.SEDEX.delivery_time)):$("#trSEDEX").fadeOut(0),null!=e.obj.Frete.PAC?($("#trPAC").fadeIn(0),$("#valorPAC").text(e.obj.Frete.PAC.price.replace(".",",")),$("#qtdDiasPAC").text(e.obj.Frete.PAC.delivery_time)):$("#trPAC").fadeOut(0)):swal("Atenção",e.mensagem,"error"),$("#iconBtnCalcularFrete").fadeOut(0)},error:function(e){$("#iconBtnCalcularFrete").fadeOut(0),swal("Atenção","Erro ao tentar conectar-se ao servidor. Tente novamente.","error")}})}
+        $(()=>{$("#cep").mask("00000-000"),null==getCookie("aiopcod")&&$("#divAvaliacao").css("display","none"),CarregarAvaliacoes(),LoadDes()}),$(".gallery-lb").each(function(){$(this).magnificPopup({delegate:"a",type:"image",gallery:{enabled:!0},mainClass:"mfp-fade"})});
+    </script>
+}
