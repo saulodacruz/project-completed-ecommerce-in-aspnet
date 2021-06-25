@@ -1,3 +1,11 @@
+# Projeto E-Commerce completo desenvolvimento em ASP.NET
+
+Este é um projeto e-commerce completo desenvolvido em ASP.NET. Ele está pronto para quem quiser configurá-lo e disponibiliza-lo em produção, seja qual for o tipo de produto para vender.
+
+Eu removi o arquivo web.config pois continha muitas informações de usuários e senhas, para quem quiser o arquivo de configuração e uma breve apresentação do que é necessário para configurar o projeto e iniciá-lo, por favor enviei um e-mail para saulodacruz1999@hotmail.com, que eu respondo.
+
+
+English
 # Full E-Commerce Project development in ASP.NET
 
 This is a complete e-commerce project developed in ASP.NET. It is ready for anyone who wants to configure it and make it available in production, whatever the type of product to sell.
@@ -5,11 +13,4 @@ This is a complete e-commerce project developed in ASP.NET. It is ready for anyo
 I removed the web.config file as it contained a lot of user and password information, for those who want the configuration file and a brief presentation of what is needed to configure the project and start it, please send an email to saulodacruz1999@hotmail.com, which I reply.
 
 
-
-PORTUGUESE
-# Projeto E-Commerce completo desenvolvimento em ASP.NET
-
-Este é um projeto e-commerce completo desenvolvido em ASP.NET. Ele está pronto para quem quiser configurá-lo e disponibiliza-lo em produção, seja qual for o tipo de produto para vender.
-
-Eu removi o arquivo web.config pois continha muitas informações de usuários e senhas, para quem quiser o arquivo de configuração e uma breve apresentação do que é necessário para configurar o projeto e iniciá-lo, por favor enviei um e-mail para saulodacruz1999@hotmail.com, que eu respondo.
 
