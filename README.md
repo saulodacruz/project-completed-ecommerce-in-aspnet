@@ -1,4 +1,4 @@
-# Projeto E-Commerce completo desenvolvimento em ASP.NET
+# Projeto E-Commerce completo desenvolvido em ASP.NET
 
 Este é um projeto e-commerce completo desenvolvido em ASP.NET arquitetado em camadas. Ele está pronto para quem quiser configurá-lo e disponibiliza-lo em produção, seja qual for o tipo de produto para vender.
 
@@ -6,7 +6,7 @@ Eu removi o arquivo web.config pois continha muitas informações de usuários e
 
 
 English
-# Full E-Commerce Project development in ASP.NET
+# Complete E-Commerce project developed in ASP.NET
 
 This is a complete e-commerce project developed in ASP.NET and architected in layers. It is ready for anyone who wants to configure it and make it available in production, whatever the type of product to sell.
 
