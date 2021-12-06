@@ -2,7 +2,7 @@
 
 Este é um projeto e-commerce completo desenvolvido em ASP.NET arquitetado em camadas. Ele está pronto para quem quiser configurá-lo e disponibiliza-lo em produção, seja qual for o tipo de produto para vender.
 
-Eu removi o arquivo web.config pois continha muitas informações de usuários e senhas, para quem quiser o arquivo de configuração e uma breve apresentação do que é necessário para configurar o projeto e iniciá-lo, por favor enviei um e-mail para saulodacruz1999@hotmail.com, que eu respondo.
+Eu removi o arquivo web.config pois continha muitas informações de usuários e senhas, para quem quiser o arquivo de configuração e uma breve apresentação do que é necessário para configurar o projeto e iniciá-lo, por favor enviem um e-mail para saulodacruz1999@hotmail.com, que eu respondo.
 
 
 English
